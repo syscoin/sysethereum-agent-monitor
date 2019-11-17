@@ -43,7 +43,7 @@ async function checkForAlerts(mailer) {
   await utils.checkForCorrectChain(mailer);
 }
 
-processDownInterval = setInterval(checkForAlerts, 5000, transporter);
+processDownInterval = setInterval(checkForAlerts, config.interval * 1000, transporter);
 
 
 

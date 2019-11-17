@@ -79,15 +79,15 @@ async function checkForCorrectChain(mailer) {
   local = local.find(el => el.status === 'active');
   remote = remote.find(el => el.status === 'active');
 
-  console.log('Local chain:', local);
-  console.log('Remote chain:', remote);
-
   if(local.height !== remote.height || local.hash !== remote.hash) {
     console.log('Chain mismatch');
+    console.log('Local chain:', local);
+    console.log('Remote chain:', remote);
     //await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'));
     process.exit(0);
+  } else {
+    console.log('Chain height and hash match.');
   }
-
 }
 
 module.exports = {

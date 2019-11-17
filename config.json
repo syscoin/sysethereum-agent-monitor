@@ -1,4 +1,5 @@
 {
+  "interval": 10,
   "smtp": {
     "host": "localhost",
     "auth": {
@@ -11,7 +12,7 @@
     "host": "localhost",
     "user": "u",
     "pass": "p",
-    "port": "8368"
+    "port": "8336"
   },
   "explorer_url": "https://explorer-testnet.blockchainfoundry.co"
 }
