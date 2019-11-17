@@ -18,32 +18,31 @@ if (process.env.NODE_ENV === 'production' ){
     host: 'localhost',
     secure: false,
     port: 25,
-  
-tls: {
-        rejectUnauthorized: false
+    tls: {
+      rejectUnauthorized: false
     }
   };
 }
 
-  let transporter = nodemailer.createTransport(mailConfig);
+//let transporter = nodemailer.createTransport(mailConfig);
+//
+//let message = {
+//  from: 'alert@explorer-testnet.blockchainfoundry.co',
+//  to: 'dwasyluk@blockchainfoundry.co',
+//  subject: 'Message title',
+//  text: 'Plaintext version of the message',
+//  html: '<p>HTML version of the message</p>'
+//};
+//transporter.sendMail(message).then(info=>{
+//  console.log('Preview URL: ' + JSON.stringify(info));
+//});
 
-  let message = {
-    from: 'alert@explorer-testnet.blockchainfoundry.co',
-    to: 'dwasyluk@blockchainfoundry.co',
-    subject: 'Message title',
-    text: 'Plaintext version of the message',
-    html: '<p>HTML version of the message</p>'
-  };
-  transporter.sendMail(message).then(info=>{
-    console.log('Preview URL: ' + JSON.stringify(info));
+const find = require('find-process');
+
+find('name', 'sysethereum-agents', false)
+  .then(function (list) {
+    console.log('there are %s nginx process(es)', list.length, list);
   });
 
-//const find = require('find-process');
-//
-//find('name', 'Syscoin', false)
-//  .then(function (list) {
-//    console.log('there are %s nginx process(es)', list.length, list);
-//  });
-//
-//
-//
+
+
