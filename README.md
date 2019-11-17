@@ -35,6 +35,11 @@ After configuration: `npm start`.
   
 *Note*:  If the service detects an alert condition it will exit to avoid spam emails.
 
+## Testing Mailer Settings
+For convenience there is a script for testing mail settings after you've completed configuration. To test mail settings run the below, passing a valid email as `[toaddress]`:
+
+`npm run mailtest [toaddress]` 
+
 ## Contributing  
   
 Please submit all updates and improvements via pull request.

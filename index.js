@@ -1,23 +1,11 @@
-const nodemailer = require('nodemailer'),
-  os = require('os');
-const config = require('./config'),
-  utils = require('./utils'),
-  constants = require('./constants');
+const nodemailer = require('nodemailer');
+const os = require('os');
 
-let mailConfig = {
-  host: config.smtp.host,
-  secure: false,
-  port: config.smtp.port,
-  tls: {
-    rejectUnauthorized: false
-  }
-};
+const config = require('./config');
+const utils = require('./utils');
+const constants = require('./constants');
 
-// if we have non-empty auth, use it
-if(config.smtp.auth.user !== '' && config.smtp.auth.pass !== '') {
-  mailConfig.auth = config.smtp.auth
-}
-
+let mailConfig = utils.configMailer(config);
 let transporter = nodemailer.createTransport(mailConfig);
 let processDownInterval;
 
@@ -39,7 +27,7 @@ if(!isNaN(parseFloat(uptime))) {
 }
 
 async function checkForAlerts(mailer) {
-  //await utils.checkProcessDown(mailer);
+  await utils.checkProcessDown(mailer);
   await utils.checkForCorrectChain(mailer);
 }
 

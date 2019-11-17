@@ -1,36 +1,46 @@
 require('arraync');
-const find = require('find-process'),
-  fs = require('fs'),
-  syscoin = require('@syscoin/syscoin-js'),
-  rp = require('request-promise');
-const constants = require('./constants'),
-  config = require('./config');
+const find = require('find-process');
+const fs = require('fs');
+const syscoin = require('@syscoin/syscoin-js');
+const rp = require('request-promise');
+
+const constants = require('./constants');
+const config = require('./config');
+
 const syscoinClient = new syscoin.SyscoinRpcClient({ host: config.syscoin.host, rpcPort: config.syscoin.port, username: config.syscoin.user, password: config.syscoin.pass});
 
 async function checkProcessDown(mailer) {
   const processes = [constants.SYSETHEREUM_AGENT, constants.SYSCOIND, constants.SYSGETH, constants.SYSRELAYER];
   console.log('Checking process statuses');
-  await processes.forEachAsync(async process => {
-    let list = await find('name', process, false);
+  await processes.forEachAsync(async processName => {
+    let list = await find('name', processName, false);
     if (list.length === 0) {
-      console.log(`${process.toUpperCase()} DOWN! Sending email.`);
-      switch(process) {
-        case constants.SYSETHEREUM_AGENT:
-          await sendMail(mailer, require('./message_agent_process_down'));
-          break;
-
+      let info;
+      switch(processName) {
         default:
+          info = await sendMail(mailer, require('./messages/agent_process_down'));
+          console.log('info', info);
           break;
       }
+      console.log(`${processName.toUpperCase()} DOWN! Sending email. ${info}`);
       process.exit(0);
     } else {
-      console.log(`${list.length} running ${process}, no action needed.`);
+      console.log(`${list.length} running ${processName}, no action needed.`);
     }
   });
 }
 
 async function sendMail(mailer, message) {
-  return await mailer.sendMail(message);
+  console.log('sendmail');
+  try {
+    let info = await mailer.sendMail(message, info => {
+      console.log('info1', info);
+    });
+    console.log('info2', info);
+
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 function writeFile(fileName, content) {
@@ -90,6 +100,28 @@ async function checkForCorrectChain(mailer) {
   }
 }
 
+function configMailer(config) {
+  let result = {
+    host: config.smtp.host,
+    secure: config.smtp.secure,
+    port: config.smtp.port
+  };
+
+  // if we have non-empty auth, use it
+  if(config.smtp.auth.user !== '' && config.smtp.auth.pass !== '') {
+    result.auth = config.smtp.auth
+  }
+
+  // if not secure
+  if(!config.smtp.secure) {
+    result.tls = {
+      rejectUnauthorized: false
+    }
+  }
+
+  return result;
+}
+
 module.exports = {
   checkProcessDown,
   writeFile,
@@ -97,5 +129,6 @@ module.exports = {
   sendMail,
   getLocalSyscoinChainData,
   getRemoteSyscoinChainData,
-  checkForCorrectChain
+  checkForCorrectChain,
+  configMailer
 };

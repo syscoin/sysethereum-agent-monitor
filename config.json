@@ -1,12 +1,13 @@
 {
-  "interval": 10,
+  "interval": 2,
   "smtp": {
-    "host": "localhost",
+    "host": "smtp.gmail.com",
     "auth": {
-      "user": "",
+      "user": "dwasyluk@blockchainfoundry.co",
       "pass": ""
     },
-    "port": 25
+    "port": 465,
+    "secure": true
   },
   "syscoin": {
     "host": "localhost",
