@@ -6,7 +6,7 @@ in the case of errors or issues so that operators can take actions on their agen
 
 The service monitors several aspects of agent operation:
  - Verifies `syscoind`, `sysrelayer.nod`, `sysgeth.nod`, and `sysethereum-agents` processes are running.
- - Verifies local chain data matches remote chain data provided by `explorer_url`.
+ - Verifies local chain data matches remote chain data provided by `explorer_url` using data from `getchaintips` RPC.
  - Alerts agent operators anytime the host machine restarts
   
 ## Installation  
