@@ -1,4 +1,4 @@
-module.exports.message = {
+module.exports = {
   from: 'alert@explorer-testnet.blockchainfoundry.co',
   to: 'dwasyluk@blockchainfoundry.co',
   subject: 'ACTION REQUIRED: Agent process down',

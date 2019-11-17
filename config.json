@@ -1,11 +1,17 @@
 {
-  "sysagent_path": "/...",
   "smtp": {
-    "host": "",
+    "host": "localhost",
     "auth": {
       "user": "",
       "pass": ""
     },
     "port": 25
-  }
+  },
+  "syscoin": {
+    "host": "localhost",
+    "user": "u",
+    "pass": "p",
+    "port": "8368"
+  },
+  "explorer_url": "https://explorer-testnet.blockchainfoundry.co"
 }

@@ -1,7 +1,8 @@
-const nodemailer = require('nodemailer');
-const find = require('find-process');
-
-const config = require('./config');
+const nodemailer = require('nodemailer'),
+  os = require('os');
+const config = require('./config'),
+  utils = require('./utils'),
+  constants = require('./constants');
 
 let mailConfig = {
   host: config.smtp.host,
@@ -18,26 +19,31 @@ if(config.smtp.auth.user !== '' && config.smtp.auth.pass !== '') {
 }
 
 let transporter = nodemailer.createTransport(mailConfig);
-
 let processDownInterval;
-async function checkProcessDown() {
-  console.log('Checking sysethereum-agent process status');
-  let list = await find('name', 'sysethereum-agents', false);
 
-  if(list.length === 0) {
-    console.log(`AGENT DOWN! No running sysethereum-agents, sending email.`);
-    const message = require('./message_agent_process_down').message;
-    transporter.sendMail(message).then(info => {
-      console.log('Preview URL: ' + JSON.stringify(info));
-      clearInterval(processDownInterval);
-    });
+// see if we have existing uptime data
+let uptime = utils.readFile(constants.UPTIME_FILE);
+if(!isNaN(parseFloat(uptime))) {
+  console.log('UPTIME:', uptime);
+  // get current uptime and see if we've restarted
+  if (os.uptime() < uptime) {
+    utils.sendMail(transporter, require('./messages/agent_os_restarted'));
   } else {
-    console.log(`${list.length} running sysethereum-agents, no action needed.`);
+    // update the uptime
+    utils.writeFile(constants.UPTIME_FILE, os.uptime());
   }
-
+} else {
+  uptime = os.uptime();
+  utils.writeFile(constants.UPTIME_FILE, uptime);
+  console.log('Writing initial uptime of ', uptime);
 }
 
-processDownInterval = setInterval(checkProcessDown, 5000);
+async function checkForAlerts(mailer) {
+  //await utils.checkProcessDown(mailer);
+  await utils.checkForCorrectChain(mailer);
+}
+
+processDownInterval = setInterval(checkForAlerts, 5000, transporter);
 
 
 
