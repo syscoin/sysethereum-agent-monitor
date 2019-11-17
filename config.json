@@ -1,3 +1,11 @@
 {
-  "sysagent_path": "/..."
+  "sysagent_path": "/...",
+  "smtp": {
+    "host": "",
+    "auth": {
+      "user": "",
+      "pass": ""
+    },
+    "port": 25
+  }
 }

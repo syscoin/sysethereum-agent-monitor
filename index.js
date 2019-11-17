@@ -1,48 +1,42 @@
 const nodemailer = require('nodemailer');
-const config = require('./config');
-
-let mailConfig;
-if (process.env.NODE_ENV === 'production' ){
-  // all emails are delivered to destination
-  mailConfig = {
-    host: 'smtp.sendgrid.net',
-    port: 587,
-    auth: {
-      user: 'real.user',
-      pass: 'verysecret'
-    }
-  };
-} else {
-  // all emails are catched by ethereal.email
-  mailConfig = {
-    host: 'localhost',
-    secure: false,
-    port: 25,
-    tls: {
-      rejectUnauthorized: false
-    }
-  };
-}
-
-//let transporter = nodemailer.createTransport(mailConfig);
-//
-//let message = {
-//  from: 'alert@explorer-testnet.blockchainfoundry.co',
-//  to: 'dwasyluk@blockchainfoundry.co',
-//  subject: 'Message title',
-//  text: 'Plaintext version of the message',
-//  html: '<p>HTML version of the message</p>'
-//};
-//transporter.sendMail(message).then(info=>{
-//  console.log('Preview URL: ' + JSON.stringify(info));
-//});
-
 const find = require('find-process');
 
-find('name', 'sysethereum-agents', false)
-  .then(function (list) {
-    console.log('there are %s nginx process(es)', list.length, list);
-  });
+const config = require('./config');
+
+let mailConfig = {
+  host: config.smtp.host,
+  secure: false,
+  port: config.smtp.port,
+  tls: {
+    rejectUnauthorized: false
+  }
+};
+
+// if we have non-empty auth, use it
+if(config.smtp.auth.user !== '' && config.smtp.auth.pass !== '') {
+  mailConfig.auth = config.smtp.auth
+}
+
+let transporter = nodemailer.createTransport(mailConfig);
+
+let processDownInterval;
+async function checkProcessDown() {
+  console.log('Checking sysethereum-agent process status');
+  let list = await find('name', 'sysethereum-agents', false);
+
+  if(list.length === 0) {
+    const message = require('./message_agent_process_down').message;
+    transporter.sendMail(message).then(info => {
+      console.log('Preview URL: ' + JSON.stringify(info));
+    });
+  } else {
+    console.log(`${list.length} running sysethereum-agents, no action needed.`);
+  }
+  clearInterval(processDownInterval);
+}
+
+processDownInterval = setInterval(checkProcessDown, 5000);
+
 
 
 
