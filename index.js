@@ -25,6 +25,7 @@ async function checkProcessDown() {
   let list = await find('name', 'sysethereum-agents', false);
 
   if(list.length === 0) {
+    console.log(`AGENT DOWN! No running sysethereum-agents, sending email.`);
     const message = require('./message_agent_process_down').message;
     transporter.sendMail(message).then(info => {
       console.log('Preview URL: ' + JSON.stringify(info));
