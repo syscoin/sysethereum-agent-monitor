@@ -15,26 +15,16 @@ if (process.env.NODE_ENV === 'production' ){
 } else {
   // all emails are catched by ethereal.email
   mailConfig = {
-    host: 'smtp.ethereal.email',
+    host: 'smtp.ip-172-31-16-136.ec2.internal',
     port: 587,
     auth: {
-      user: 'ethereal.user@ethereal.email',
-      pass: 'verysecret'
+      user: '',
+      pass: ''
     }
   };
 }
 
-nodemailer.createTestAccount((err, account) => {
-  // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: account.user, // generated ethereal user
-      pass: account.pass  // generated ethereal password
-    }
-  });
+  let transporter = nodemailer.createTransport(mailConfig);
 
   let message = {
     from: 'sender@server.com',
@@ -44,16 +34,15 @@ nodemailer.createTestAccount((err, account) => {
     html: '<p>HTML version of the message</p>'
   };
   transporter.sendMail(message).then(info=>{
-    console.log('Preview URL: ' + nodemailer.getTestMessageUrl(info));
-  });
-});
-
-const find = require('find-process');
-
-find('name', 'Syscoin', false)
-  .then(function (list) {
-    console.log('there are %s nginx process(es)', list.length, list);
+    console.log('Preview URL: ' + info);
   });
 
-
-
+//const find = require('find-process');
+//
+//find('name', 'Syscoin', false)
+//  .then(function (list) {
+//    console.log('there are %s nginx process(es)', list.length, list);
+//  });
+//
+//
+//
