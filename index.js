@@ -28,11 +28,12 @@ async function checkProcessDown() {
     const message = require('./message_agent_process_down').message;
     transporter.sendMail(message).then(info => {
       console.log('Preview URL: ' + JSON.stringify(info));
+      clearInterval(processDownInterval);
     });
   } else {
     console.log(`${list.length} running sysethereum-agents, no action needed.`);
   }
-  clearInterval(processDownInterval);
+
 }
 
 processDownInterval = setInterval(checkProcessDown, 5000);
