@@ -1,12 +1,12 @@
 
-# agent-monitor  
+# sysethereum-agent-monitor  
   
 A javascript service for monitoring critical [sysethereum-agents](https://github.com/syscoin/sysethereum-agents) process and details and pushing email alerts  
 in the case of errors or issues so that operators can take actions on their agent.  
 
 The service monitors several aspects of agent operation:
  - Verifies `syscoind`, `sysrelayer.nod`, `sysgeth.nod`, and `sysethereum-agents` processes are running.
- - Verifies local chain data matches remote chain data provided by `explorer_url`.
+ - Verifies local chain data matches remote chain data provided by `explorer_url` using data from `getchaintips` RPC.
  - Alerts agent operators anytime the host machine restarts
   
 ## Installation  
@@ -29,7 +29,7 @@ Edit `config.json` to configure the monitor for your environment.
 `explorer_url` - URL to Syscoin block explorer that utilizes [BCF Explorer API](https://github.com/blockchainfoundryinc/explorer). No trailing slash.  
   
 ## Usage 
-It is recommended you configure the `agent-monitor` to start when the machine restarts in order to be alerts of unexpected restarts. For more information on setting up `agent-monitor` to start automatically on reboot read [the PM2 docs.](https://pm2.keymetrics.io/docs/usage/startup/)
+It is recommended you configure the `sysethereum-agent-monitor` to start when the machine restarts in order to be alerts of unexpected restarts. For more information on setting up `sysethereum-agent-monitor` to start automatically on reboot read [the PM2 docs.](https://pm2.keymetrics.io/docs/usage/startup/)
 
 After configuration: `npm start`.  
   
