@@ -15,11 +15,12 @@ if (process.env.NODE_ENV === 'production' ){
 } else {
   // all emails are catched by ethereal.email
   mailConfig = {
-    host: 'smtp.ip-172-31-16-136.ec2.internal',
-    port: 587,
-    auth: {
-      user: '',
-      pass: ''
+    host: 'localhost',
+    secure: false,
+    port: 25,
+  
+tls: {
+        rejectUnauthorized: false
     }
   };
 }
@@ -27,14 +28,14 @@ if (process.env.NODE_ENV === 'production' ){
   let transporter = nodemailer.createTransport(mailConfig);
 
   let message = {
-    from: 'sender@server.com',
-    to: 'receiver@sender.com',
+    from: 'alert@explorer-testnet.blockchainfoundry.co',
+    to: 'dwasyluk@blockchainfoundry.co',
     subject: 'Message title',
     text: 'Plaintext version of the message',
     html: '<p>HTML version of the message</p>'
   };
   transporter.sendMail(message).then(info=>{
-    console.log('Preview URL: ' + info);
+    console.log('Preview URL: ' + JSON.stringify(info));
   });
 
 //const find = require('find-process');
