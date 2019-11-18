@@ -33,11 +33,8 @@ async function checkProcessDown(mailer) {
 async function sendMail(mailer, message) {
   console.log('sendmail');
   try {
-    let info = await mailer.sendMail(message, info => {
-      console.log('info1', info);
-    });
-    console.log('info2', info);
-
+    let info = await mailer.sendMail(message);
+    console.log('sendmail result', info);
   } catch (e) {
     console.log(e);
   }

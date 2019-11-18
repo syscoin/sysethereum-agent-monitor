@@ -15,10 +15,8 @@ let message =  {
   html: '<p>Sysetehreum Agent Monitor Test Email</p>'
 };
 
-console.log('process', process.argv);
-
 const mailConfig = utils.configMailer(config);
 let transporter = nodemailer.createTransport(mailConfig);
-transporter.sendMail(message).then(info=>{
+utils.sendMail(transporter, message).then(info => {
   console.log('Sendmail test: ' + JSON.stringify(info));
 });
