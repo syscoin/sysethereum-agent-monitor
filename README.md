@@ -27,6 +27,7 @@ Edit `config.json` to configure the monitor for your environment.
 `syscoin.pass` - Syscoin RPC password.  
 `syscoin.port` - Syscoin RPC port.  
 `explorer_url` - URL to Syscoin block explorer that utilizes [BCF Explorer API](https://github.com/blockchainfoundryinc/explorer). No trailing slash.  
+`nottify_address` - Email address which notifications will be sent.  
   
 ## Usage 
 It is recommended you configure the `sysethereum-agent-monitor` to start when the machine restarts in order to be alerts of unexpected restarts. For more information on setting up `sysethereum-agent-monitor` to start automatically on reboot read [the PM2 docs.](https://pm2.keymetrics.io/docs/usage/startup/)

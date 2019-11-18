@@ -1,6 +1,7 @@
+const config = require('../config');
+
 module.exports = {
-  from: 'alert@explorer-testnet.blockchainfoundry.co',
-  to: 'dwasyluk@blockchainfoundry.co',
+  to: config.notify_address,
   subject: 'ACTION REQUIRED: Agent process down',
   text: 'The agent process on the target machine has stopped running. Action may be required!',
   html: '<p>The agent process on the target machine has stopped running. Action may be required!</p>'

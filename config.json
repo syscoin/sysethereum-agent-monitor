@@ -15,5 +15,6 @@
     "pass": "p",
     "port": "8336"
   },
-  "explorer_url": "https://explorer-testnet.blockchainfoundry.co"
+  "explorer_url": "https://explorer-testnet.blockchainfoundry.co",
+  "notify_address": "dwasyluk@blockchainfoundry.co"
 }
