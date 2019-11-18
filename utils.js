@@ -90,7 +90,7 @@ async function checkForCorrectChain(mailer) {
     console.log('Chain mismatch');
     console.log('Local chain:', local);
     console.log('Remote chain:', remote);
-    //await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'));
+    await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'));
     process.exit(0);
   } else {
     console.log('Chain height and hash match.');
