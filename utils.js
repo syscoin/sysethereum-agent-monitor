@@ -1,4 +1,5 @@
 require('arraync');
+const substitute = require('token-substitute');
 const find = require('find-process');
 const fs = require('fs');
 const syscoin = require('@syscoin/syscoin-js');
@@ -30,8 +31,15 @@ async function checkProcessDown(mailer) {
   });
 }
 
-async function sendMail(mailer, message) {
+async function sendMail(mailer, message, tokenObj = null) {
   console.log('sendmail');
+  if (tokenObj) {
+    message.to = substitute(message.to, tokenObj);
+    message.subject = substitute(message.subject, tokenObj);
+    message.text = substitute(message.text, tokenObj);
+    message.html = substitute(message.html, tokenObj);
+  }
+
   try {
     let info = await mailer.sendMail(message);
     console.log('sendmail result', info);
@@ -90,7 +98,13 @@ async function checkForCorrectChain(mailer) {
     console.log('Chain mismatch');
     console.log('Local chain:', local);
     console.log('Remote chain:', remote);
-    await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'));
+    const tokenObj = {
+      tokens: {
+        local: JSON.stringify(local),
+        remote: JSON.stringify(remote)
+      }
+    };
+    await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'), tokenObj);
     process.exit(0);
   } else {
     console.log('Chain height and hash match.');
