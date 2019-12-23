@@ -16,10 +16,10 @@ if(!isNaN(parseFloat(uptime))) {
   // get current uptime and see if we've restarted
   if (os.uptime() < uptime) {
     utils.sendMail(transporter, require('./messages/agent_os_restarted'));
-  } else {
-    // update the uptime
-    utils.writeFile(constants.UPTIME_FILE, os.uptime());
   }
+
+  // update the uptime
+  utils.writeFile(constants.UPTIME_FILE, os.uptime());
 } else {
   uptime = os.uptime();
   utils.writeFile(constants.UPTIME_FILE, uptime);
