@@ -1,9 +1,10 @@
 require('arraync');
-const substitute = require('token-substitute');
+const Jtr = require('json-token-replace');
 const find = require('find-process');
 const fs = require('fs');
 const syscoin = require('@syscoin/syscoin-js');
 const rp = require('request-promise');
+const jtr = new Jtr();
 
 const constants = require('./constants');
 const config = require('./config');
@@ -34,10 +35,10 @@ async function checkProcessDown(mailer) {
 async function sendMail(mailer, message, tokenObj = null) {
   console.log('sendmail');
   if (tokenObj) {
-    message.to = substitute(message.to, tokenObj);
-    message.subject = substitute(message.subject, tokenObj);
-    message.text = substitute(message.text, tokenObj);
-    message.html = substitute(message.html, tokenObj);
+    message.to = jtr.replace(tokenObj, message.to);
+    message.subject = jtr.replace(tokenObj, message.subject);
+    message.text = jtr.replace(tokenObj, message.text);
+    message.html = jtr.replace(tokenObj, message.html);
   }
 
   try {
@@ -99,10 +100,8 @@ async function checkForCorrectChain(mailer) {
     console.log('Local chain:', local);
     console.log('Remote chain:', remote);
     const tokenObj = {
-      tokens: {
-        local: JSON.stringify(local),
-        remote: JSON.stringify(remote)
-      }
+      local: JSON.stringify(local),
+      remote: JSON.stringify(remote)
     };
     await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'), tokenObj);
     process.exit(0);
