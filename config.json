@@ -1,7 +1,8 @@
 {
   "interval": 2,
   "agent_id": "",
-  "infura_api": "https://mainnet.infura.io/v3/267f97361808461cbe4b3cb378f0a33f",
+  "infura_api": "",
+  "eth_block_threshold": 1440,
   "smtp": {
     "host": "smtp.gmail.com",
     "auth": {

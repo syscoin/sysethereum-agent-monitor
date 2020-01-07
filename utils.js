@@ -67,7 +67,7 @@ function readFile(fileName) {
   }
 }
 
-async function getLocalSyscoinChainData() {
+async function getLocalSyscoinChainTips() {
   try {
     return await syscoinClient.callRpc("getchaintips", []).call();
   }catch(e) {
@@ -75,7 +75,7 @@ async function getLocalSyscoinChainData() {
   }
 }
 
-async function getRemoteSyscoinChainData() {
+async function getRemoteSyscoinChainTips() {
   const options = {
     uri: `${config.explorer_url}/ext/getchaintips`,
     headers: {
@@ -87,9 +87,9 @@ async function getRemoteSyscoinChainData() {
   return await rp(options);
 }
 
-async function checkForCorrectChain(mailer) {
-  let local = await getLocalSyscoinChainData();
-  let remote = await getRemoteSyscoinChainData();
+async function checkSyscoinChainTips(mailer) {
+  let local = await getLocalSyscoinChainTips();
+  let remote = await getRemoteSyscoinChainTips();
 
   // find active chains
   local = local.find(el => el.status === 'active');
@@ -108,6 +108,53 @@ async function checkForCorrectChain(mailer) {
   } else {
     console.log('Chain height and hash match.');
   }
+}
+
+async function checkEthereumChainHeight(mailer) {
+  let local = await getLocalEthereumChainHeight();
+  local = local.geth_current_block;
+
+  let remote = await getRemoteEthereumChainHeight();
+  remote =  parseInt(remote.result, 16);
+
+  if(local !== remote && (remote - local) >= config.eth_block_threshold) {
+    console.log('Eth chain has fallen behind!');
+    console.log('Local chain:', local);
+    console.log('Remote chain:', remote);
+    const tokenObj = {
+      local: JSON.stringify(local),
+      remote: JSON.stringify(remote)
+    };
+    await sendMail(mailer, require('./messages/agent_eth_chain_height'), tokenObj);
+    process.exit(0);
+  } else {
+    let diff = remote - local;
+    console.log(`Eth height within threshold, local/remote height difference: ${diff}`);
+  }
+}
+
+async function getLocalEthereumChainHeight() {
+  try {
+    return await syscoinClient.callRpc("getblockchaininfo", []).call();
+  }catch(e) {
+    console.log("ERR getChainTips", JSON.stringify(e.response.data.error));
+  }
+}
+
+async function getRemoteEthereumChainHeight() {
+  const options = {
+    uri: `${config.infura_api}`,
+    method: 'POST',
+    body: {
+      "jsonrpc":"2.0",
+      "method":"eth_blockNumber",
+      "params": [],
+      "id":1
+    },
+    json: true // Automatically parses the JSON string in the response
+  };
+
+  return await rp(options);
 }
 
 function configMailer(config) {
@@ -137,8 +184,7 @@ module.exports = {
   writeFile,
   readFile,
   sendMail,
-  getLocalSyscoinChainData,
-  getRemoteSyscoinChainData,
-  checkForCorrectChain,
+  checkSyscoinChainTips,
+  checkEthereumChainHeight,
   configMailer
 };

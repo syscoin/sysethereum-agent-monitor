@@ -28,7 +28,8 @@ if(!isNaN(parseFloat(uptime))) {
 
 async function checkForAlerts(mailer) {
   await utils.checkProcessDown(mailer);
-  await utils.checkForCorrectChain(mailer);
+  await utils.checkSyscoinChainTips(mailer);
+  await utils.checkEthereumChainHeight(mailer);
 }
 
 processDownInterval = setInterval(checkForAlerts, config.interval * 1000, transporter);
