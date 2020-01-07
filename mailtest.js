@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const config = require('./config');
+const config = require('./config.local');
 const utils = require('./utils');
 
 const toAddress = process.argv[2];
@@ -9,6 +9,7 @@ if (!toAddress) {
 }
 
 let message =  {
+  from: 'dwasyluk@blockchainfoundry.co',
   to: toAddress,
   subject: 'Sysetehreum Agent Monitor Test Email',
   text: 'Sysetehreum Agent Monitor Test Email',

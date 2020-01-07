@@ -35,7 +35,8 @@ async function checkProcessDown(mailer) {
 async function sendMail(mailer, message, tokenObj = null) {
   console.log('sendmail');
   if (tokenObj) {
-    message.to = jtr.replace(tokenObj, message.to);
+    message.to = config.notify_email;
+    message.from = config.sender_email;
     message.subject = jtr.replace(tokenObj, message.subject);
     message.text = jtr.replace(tokenObj, message.text);
     message.html = jtr.replace(tokenObj, message.html);
