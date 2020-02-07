@@ -42,7 +42,7 @@ async function checkForAlerts(mailer) {
     }
   };
 
-  io.sockets.emit('event', msg);
+  io.sockets.emit('message', msg);
 }
 
 processDownInterval = setInterval(checkForAlerts, config.interval * 1000, transporter);
