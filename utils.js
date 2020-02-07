@@ -118,6 +118,8 @@ async function checkSyscoinChainTips(mailer) {
     return { local, remote };
   } else {
     console.log('Chain height and hash match.');
+    console.log('Local chain:', local);
+    console.log('Remote chain:', remote);
     return { local, remote };
   }
 }
