@@ -9,27 +9,36 @@ const jtr = new Jtr();
 const constants = require('./constants');
 const config = require('./config');
 
-const syscoinClient = new syscoin.SyscoinRpcClient({ host: config.syscoin.host, rpcPort: config.syscoin.port, username: config.syscoin.user, password: config.syscoin.pass});
+const syscoinClient = new syscoin.SyscoinRpcClient({host: config.syscoin.host, rpcPort: config.syscoin.port, username: config.syscoin.user, password: config.syscoin.pass});
 
 async function checkProcessDown(mailer) {
   const processes = [constants.SYSETHEREUM_AGENT, constants.SYSCOIND, constants.SYSGETH, constants.SYSRELAYER];
   console.log('Checking process statuses');
+  let status = {
+    [constants.SYSETHEREUM_AGENT]: false,
+    [constants.SYSCOIND]: false,
+    [constants.SYSGETH]: false,
+    [constants.SYSRELAYER]: false
+  };
   await processes.forEachAsync(async processName => {
     let list = await find('name', processName, false);
     if (list.length === 0) {
       let info;
-      switch(processName) {
+      switch (processName) {
         default:
           info = await sendMail(mailer, require('./messages/agent_process_down'));
           console.log('info', info);
           break;
       }
       console.log(`${processName.toUpperCase()} DOWN! Sending email. ${info}`);
-      process.exit(0);
+      status[processName] = false;
     } else {
       console.log(`${list.length} running ${processName}, no action needed.`);
+      status[processName] = true;
     }
   });
+
+  return status;
 }
 
 async function sendMail(mailer, message, tokenObj = null) {
@@ -72,7 +81,7 @@ function readFile(fileName) {
 async function getLocalSyscoinChainTips() {
   try {
     return await syscoinClient.callRpc("getchaintips", []).call();
-  }catch(e) {
+  } catch (e) {
     console.log("ERR getChainTips", JSON.stringify(e.response.data.error));
   }
 }
@@ -97,7 +106,7 @@ async function checkSyscoinChainTips(mailer) {
   local = local.find(el => el.status === 'active');
   remote = remote.find(el => el.status === 'active');
 
-  if(local.height !== remote.height || local.hash !== remote.hash) {
+  if (local.height !== remote.height || local.hash !== remote.hash) {
     console.log('Chain mismatch');
     console.log('Local chain:', local);
     console.log('Remote chain:', remote);
@@ -106,9 +115,10 @@ async function checkSyscoinChainTips(mailer) {
       remote: JSON.stringify(remote)
     };
     await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'), tokenObj);
-    process.exit(0);
+    return { local, remote };
   } else {
     console.log('Chain height and hash match.');
+    return { local, remote };
   }
 }
 
@@ -117,9 +127,9 @@ async function checkEthereumChainHeight(mailer) {
   local = local.geth_current_block;
 
   let remote = await getRemoteEthereumChainHeight();
-  remote =  parseInt(remote.result, 16);
+  remote = parseInt(remote.result, 16);
 
-  if(local !== remote && (remote - local) >= config.eth_block_threshold) {
+  if (local !== remote && (remote - local) >= config.eth_block_threshold) {
     console.log('Eth chain has fallen behind!');
     console.log('Local chain:', local);
     console.log('Remote chain:', remote);
@@ -128,17 +138,18 @@ async function checkEthereumChainHeight(mailer) {
       remote: JSON.stringify(remote)
     };
     await sendMail(mailer, require('./messages/agent_eth_chain_height'), tokenObj);
-    process.exit(0);
+    return { local, remote };
   } else {
     let diff = remote - local;
     console.log(`Eth height within threshold, local/remote height difference: ${diff}`);
+    return { local, remote };
   }
 }
 
 async function getLocalEthereumChainHeight() {
   try {
     return await syscoinClient.callRpc("getblockchaininfo", []).call();
-  }catch(e) {
+  } catch (e) {
     console.log("ERR getChainTips", JSON.stringify(e.response.data.error));
   }
 }
@@ -148,10 +159,10 @@ async function getRemoteEthereumChainHeight() {
     uri: `${config.infura_api}`,
     method: 'POST',
     body: {
-      "jsonrpc":"2.0",
-      "method":"eth_blockNumber",
+      "jsonrpc": "2.0",
+      "method": "eth_blockNumber",
       "params": [],
-      "id":1
+      "id": 1
     },
     json: true // Automatically parses the JSON string in the response
   };
@@ -167,19 +178,39 @@ function configMailer(config) {
   };
 
   // if we have non-empty auth, use it
-  if(config.smtp.auth.user !== '' && config.smtp.auth.pass !== '') {
-    result.auth = config.smtp.auth
+  if (config.smtp.auth.user !== '' && config.smtp.auth.pass !== '') {
+    result.auth = config.smtp.auth;
   }
 
   // if not secure
-  if(!config.smtp.secure) {
+  if (!config.smtp.secure) {
     result.tls = {
       rejectUnauthorized: false
-    }
+    };
   }
 
   return result;
 }
+
+async function getRemoteEthereumSuperblockContract() {
+  const options = {
+    uri: `${config.infura_api}`,
+    method: 'POST',
+    body: {
+      "jsonrpc": "2.0",
+      "method": "eth_getLogs",
+      "params": [{
+        "address": "0xd03a860F481e83a8659640dC75008e9FcDF5d879",
+        "fromBlock": "0x8ce808"
+      }],
+      "id": 1
+    },
+    json: true // Automatically parses the JSON string in the response
+  };
+
+  return await rp(options);
+}
+
 
 module.exports = {
   checkProcessDown,

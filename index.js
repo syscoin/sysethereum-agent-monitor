@@ -2,6 +2,8 @@ const nodemailer = require('nodemailer');
 const os = require('os');
 
 const config = require('./config');
+const io = require('socket.io')(config.ws_port);
+io.on('connection', socket => console.log('client connected'));
 const utils = require('./utils');
 const constants = require('./constants');
 
@@ -27,9 +29,20 @@ if(!isNaN(parseFloat(uptime))) {
 }
 
 async function checkForAlerts(mailer) {
-  await utils.checkProcessDown(mailer);
-  await utils.checkSyscoinChainTips(mailer);
-  await utils.checkEthereumChainHeight(mailer);
+  const processStatus = await utils.checkProcessDown(mailer);
+  const sysStatus = await utils.checkSyscoinChainTips(mailer);
+  const ethStatus = await utils.checkEthereumChainHeight(mailer);
+
+  let msg = {
+    topic: 'agent',
+    message: {
+      ... processStatus,
+      sysStatus,
+      ethStatus
+    }
+  };
+
+  io.sockets.emit('event', msg);
 }
 
 processDownInterval = setInterval(checkForAlerts, config.interval * 1000, transporter);
