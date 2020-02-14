@@ -1,15 +1,15 @@
+const app = require('express')();
+const cors = require('cors');
+
 const nodemailer = require('nodemailer');
 const os = require('os');
 
 const config = require('./config');
-const io = require('socket.io')(config.ws_port);
-io.on('connection', socket => console.log('client connected'));
 const utils = require('./utils');
 const constants = require('./constants');
 
 let mailConfig = utils.configMailer(config);
 let transporter = nodemailer.createTransport(mailConfig);
-let processDownInterval;
 
 // see if we have existing uptime data
 let uptime = utils.readFile(constants.UPTIME_FILE);
@@ -28,25 +28,13 @@ if(!isNaN(parseFloat(uptime))) {
   console.log('Writing initial uptime of ', uptime);
 }
 
-async function checkForAlerts(mailer) {
-  const processStatus = await utils.checkProcessDown(mailer);
-  const sysStatus = await utils.checkSyscoinChainTips(mailer);
-  const ethStatus = await utils.checkEthereumChainHeight(mailer);
+app.use(cors());
+app.get('/status', async (req, res) => {
+  const processStatus = await utils.checkProcessDown(transporter);
+  const sysStatus = await utils.checkSyscoinChainTips(transporter);
+  const ethStatus = await utils.checkEthereumChainHeight(transporter);
 
-  let msg = {
-    topic: 'agent',
-    message: {
-      ... processStatus,
-      sysStatus,
-      ethStatus
-    }
-  };
+  return res.send({ ...processStatus, sysStatus, ethStatus });
+})
 
-  io.sockets.emit('message', msg);
-}
-
-processDownInterval = setInterval(checkForAlerts, config.interval * 1000, transporter);
-
-
-
-
+app.listen(config.port);
