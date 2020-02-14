@@ -21,6 +21,5 @@
   "explorer_url": "https://explorer-testnet.blockchainfoundry.co",
   "notify_email": "sysethagent@blockchainfoundry.co;dwasyluk@blockchainfoundry.co",
   "sender_email": "dwasyluk@blockchainfoundry.co",
-  "ws_port": 9999,
-  "port": 9998
+  "port": 9999
 }
