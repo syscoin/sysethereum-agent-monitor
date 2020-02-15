@@ -49,3 +49,5 @@ app.get('/status', async (req, res) => {
 });
 
 app.listen(config.port);
+console.log(`Sysethereum agent monitor started on port ${config.port}`);
+
