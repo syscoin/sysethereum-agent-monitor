@@ -96,12 +96,12 @@ async function getRemoteSyscoinChainTips() {
 }
 
 async function checkSyscoinChainTips(mailer) {
-  let local = await getLocalSyscoinChainTips();
-  let remote = await getRemoteSyscoinChainTips();
+  let full_local = await getLocalSyscoinChainTips();
+  let full_remote = await getRemoteSyscoinChainTips();
 
   // find active chains
-  local = local.find(el => el.status === 'active');
-  remote = remote.find(el => el.status === 'active');
+  let local = full_local.find(el => el.status === 'active');
+  let remote = full_remote.find(el => el.status === 'active');
 
   if (local.height !== remote.height || local.hash !== remote.hash) {
     console.log('Chain mismatch');
@@ -114,10 +114,10 @@ async function checkSyscoinChainTips(mailer) {
     if(config.enable_mail) {
       await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'), tokenObj);
     }
-    return { local, remote, localtips: local, remotetips: remote };
+    return { local, remote, localtips: full_local, remotetips: full_remote };
   } else {
     console.log('Chain height and hash match.');
-    return { local, remote, localtips: local, remotetips: remote  };
+    return { local, remote, localtips: full_local, remotetips: full_remote  };
   }
 }
 
