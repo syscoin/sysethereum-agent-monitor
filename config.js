@@ -1,4 +1,7 @@
-{
+const dotenv = require('dotenv');
+dotenv.config({ silent: true });
+
+module.exports = process.env.CONFIG || {
   "interval": 2,
   "agent_id": "",
   "infura_api": "",
@@ -22,4 +25,4 @@
   "notify_email": "sysethagent@blockchainfoundry.co;dwasyluk@blockchainfoundry.co",
   "sender_email": "dwasyluk@blockchainfoundry.co",
   "port": 9999
-}
+};
