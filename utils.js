@@ -115,10 +115,10 @@ async function checkSyscoinChainTips(mailer) {
       remote: JSON.stringify(remote)
     };
     await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'), tokenObj);
-    return { local, remote };
+    return { local, remote, localtips: local, remotetips: remote };
   } else {
     console.log('Chain height and hash match.');
-    return { local, remote };
+    return { local, remote, localtips: local, remotetips: remote  };
   }
 }
 
