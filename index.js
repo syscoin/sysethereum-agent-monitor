@@ -10,6 +10,7 @@ const constants = require('./constants');
 
 let mailConfig = utils.configMailer(config);
 let transporter = nodemailer.createTransport(mailConfig);
+let checkInterval;
 
 // see if we have existing uptime data
 let uptime = utils.readFile(constants.UPTIME_FILE);
@@ -28,13 +29,23 @@ if(!isNaN(parseFloat(uptime))) {
   console.log('Writing initial uptime of ', uptime);
 }
 
+async function checkForAlerts(mailer) {
+  const processStatus = await utils.checkProcessDown(mailer);
+  const sysStatus = await utils.checkSyscoinChainTips(mailer);
+  const ethStatus = await utils.checkEthereumChainHeight(mailer);
+
+  return { ...processStatus, sysStatus, ethStatus };
+}
+
+// passive status checking
+checkInterval = setInterval(checkForAlerts, config.interval * 1000, transporter);
+
+// webserver for proactive checks
 app.use(cors());
 app.get('/status', async (req, res) => {
-  const processStatus = await utils.checkProcessDown(transporter);
-  const sysStatus = await utils.checkSyscoinChainTips(transporter);
-  const ethStatus = await utils.checkEthereumChainHeight(transporter);
+  const status = await checkForAlerts(transporter);
 
-  return res.send({ ...processStatus, sysStatus, ethStatus });
-})
+  return res.send({ ...status});
+});
 
 app.listen(config.port);
