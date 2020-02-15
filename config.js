@@ -24,5 +24,6 @@ module.exports = process.env.CONFIG || {
   "explorer_url": "https://explorer-testnet.blockchainfoundry.co",
   "notify_email": "sysethagent@blockchainfoundry.co;dwasyluk@blockchainfoundry.co",
   "sender_email": "dwasyluk@blockchainfoundry.co",
-  "port": 9999
+  "port": 9999,
+  "enable_mail": false
 };

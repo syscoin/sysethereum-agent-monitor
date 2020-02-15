@@ -24,13 +24,10 @@ async function checkProcessDown(mailer) {
     let list = await find('name', processName, false);
     if (list.length === 0) {
       let info;
-      switch (processName) {
-        default:
-          info = await sendMail(mailer, require('./messages/agent_process_down'));
-          console.log('info', info);
-          break;
+      if (config.enable_mail) {
+        info = await sendMail(mailer, require('./messages/agent_process_down'));
+        console.log(`${processName.toUpperCase()} DOWN! Sending email. ${info}`);
       }
-      console.log(`${processName.toUpperCase()} DOWN! Sending email. ${info}`);
       status[processName] = false;
     } else {
       console.log(`${list.length} running ${processName}, no action needed.`);
@@ -114,7 +111,9 @@ async function checkSyscoinChainTips(mailer) {
       local: JSON.stringify(local),
       remote: JSON.stringify(remote)
     };
-    await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'), tokenObj);
+    if(config.enable_mail) {
+      await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'), tokenObj);
+    }
     return { local, remote, localtips: local, remotetips: remote };
   } else {
     console.log('Chain height and hash match.');
@@ -137,7 +136,9 @@ async function checkEthereumChainHeight(mailer) {
       local: JSON.stringify(local),
       remote: JSON.stringify(remote)
     };
-    await sendMail(mailer, require('./messages/agent_eth_chain_height'), tokenObj);
+    if (config.enable_mail) {
+      await sendMail(mailer, require('./messages/agent_eth_chain_height'), tokenObj);
+    }
     return { local, remote };
   } else {
     let diff = remote - local;
