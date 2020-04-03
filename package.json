@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "mailtest": "node mailtest.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setenv": "node node_modules/setenv"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +25,7 @@
     "os": "^0.1.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.5",
+    "setenv": "git+https://github.com/blockchainfoundryinc/setenv.git",
     "socket.io": "^2.3.0",
     "token-substitute": "^1.2.0"
   }
