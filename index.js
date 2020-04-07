@@ -49,5 +49,5 @@ app.get('/status', async (req, res) => {
 });
 
 app.listen(config.port);
-console.log(`Sysethereum agent monitor started with config ${config}`);
+console.log(`Sysethereum agent monitor started with config ${JSON.stringify(config)}`);
 
