@@ -61,6 +61,7 @@ async function sendMail(mailer, message, tokenObj = null) {
 
   try {
     let info = await mailer.sendMail(message);
+    lastMailTime = Date.now();
     console.log('sendmail result', info);
   } catch (e) {
     console.log(e);
