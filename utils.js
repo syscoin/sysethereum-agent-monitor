@@ -85,7 +85,7 @@ function readFile(fileName) {
 
 async function getLocalSyscoinChainTips() {
   try {
-    return await syscoinClient.callRpc("getchaintips", []).call();
+    return await syscoinClient.callRpc("getchaintips", []).call(false);
   } catch (e) {
     console.log("ERR getChainTips", e);
   }
