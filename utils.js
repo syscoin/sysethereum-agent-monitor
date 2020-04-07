@@ -107,6 +107,8 @@ async function checkSyscoinChainTips(mailer) {
   let full_local = await getLocalSyscoinChainTips();
   let full_remote = await getRemoteSyscoinChainTips();
 
+  console.log('chaintips', full_local, full_remote);
+
   // find active chains
   let local = full_local.find(el => el.status === 'active');
   let remote = full_remote.find(el => el.status === 'active');
