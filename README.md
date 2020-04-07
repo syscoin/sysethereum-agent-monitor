@@ -14,7 +14,8 @@ The service monitors several aspects of agent operation:
 `npm i`  
   
 ## Configuration   
-Edit `config.json` to configure the monitor for your environment.   
+Edit `config.json` to configure the monitor for your environment. This tool uses 
+https://github.com/blockchainfoundryinc/setenv for simplified configuration. 
   
 **Config Parameters:**  
 `interval` - (seconds) how often to check system statuses.  
