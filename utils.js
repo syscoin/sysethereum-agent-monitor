@@ -13,13 +13,6 @@ let lastMailTime = null;
 const syscoinClient = new syscoin.SyscoinRpcClient({host: config.syscoin.host, rpcPort: config.syscoin.port, username: config.syscoin.user, password: config.syscoin.pass});
 
 async function checkProcessDown(mailer) {
-  const emailTimeout = config.email_retry_minutes * 1000 * 60; // minutes
-  if (lastMailTime !== null && Date.now() < (lastMailTime + emailTimeout)) {
-    const time = (lastMailTime + emailTimeout) - Date.now();
-    console.log('Waiting to send next alert email. Ms remaining:', time);
-    return;
-  }
-
   const processes = [constants.SYSETHEREUM_AGENT, constants.SYSCOIND, constants.SYSGETH, constants.SYSRELAYER];
   console.log('Checking process statuses');
   let status = {
@@ -48,6 +41,14 @@ async function checkProcessDown(mailer) {
 
 async function sendMail(mailer, message, tokenObj = null) {
   console.log('sendmail');
+
+  const emailTimeout = config.email_retry_minutes * 1000 * 60; // minutes
+  if (lastMailTime !== null && Date.now() < (lastMailTime + emailTimeout)) {
+    const time = (lastMailTime + emailTimeout) - Date.now();
+    console.log('Waiting to send next alert email. Ms remaining:', time);
+    return;
+  }
+
   message.to = config.notify_email;
   message.from = config.sender_email;
   if (tokenObj) {
