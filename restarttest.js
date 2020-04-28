@@ -3,7 +3,7 @@ const { spawnSync} = require('child_process');
 run = async () => {
   try {
     console.log('Stopping all screens.');
-    const pkill = spawnSync('screen', ['list']);
+    const pkill = spawnSync('screen', ['-list']);
     console.log('out: ', pkill, Object.values(pkill.output).forEach(item => {
       console.log(JSON.stringify(item));
     }));
