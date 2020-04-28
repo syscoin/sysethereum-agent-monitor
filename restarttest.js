@@ -14,7 +14,7 @@ run = async () => {
 
     // now restart sysethagent, in a screen
     console.log('Starting sysethagent');
-    const sysup = execSync('screen -S sysethagent ./start_agent.sh');
+    const sysethup = execSync('screen -S sysethagent ./start_agent.sh');
 
   } catch (e) {
     console.log('Error: ', e);
