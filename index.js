@@ -31,16 +31,16 @@ if(!isNaN(parseFloat(uptime))) {
   console.log('Writing initial uptime of ', uptime);
 }
 
-async function checkForAlerts(mailer) {
+async function checkForAlerts(mailer, skipMail) {
   const processStatus = await utils.checkProcessDown();
   const sysStatus = await utils.checkSyscoinChainTips();
   const ethStatus = await utils.checkEthereumChainHeight();
-  const result = { ...processStatus, sysStatus, ethStatus };
+  const statusResult = { ...processStatus, sysStatus, ethStatus };
 
   if (config.enable_autorestart && !isAttemptingRestart) {
     isAttemptingRestart = true;
     console.log('Attempting restart!!!');
-    const result = await stopAndRestart(mailer, result);
+    const result = await stopAndRestart();
 
     if(result) {
       // restart worked
@@ -56,7 +56,7 @@ async function checkForAlerts(mailer) {
 
     }
 
-  } else {
+  } else if (!skipMail) {
     if (isAttemptingRestart) {
       isAttemptingRestart = false;
     }
@@ -92,7 +92,7 @@ async function checkForAlerts(mailer) {
     }
   }
 
-  return result;
+  return statusResult;
 }
 
 function startCheckInterval() {
@@ -105,7 +105,7 @@ startCheckInterval();
 // webserver for proactive checks
 app.use(cors());
 app.get('/status', async (req, res) => {
-  const status = await checkForAlerts(transporter);
+  const status = await checkForAlerts(transporter, true);
 
   return res.send({ ...status});
 });
