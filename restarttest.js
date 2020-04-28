@@ -1,4 +1,5 @@
 const { execSync } = require('child_process');
+const config = require('./config');
 
 const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -14,7 +15,7 @@ run = async () => {
 
     console.log('Stopping screens.');
     try {
-      const syseth = execSync('screen -XS agenttest quit');
+      const syseth = execSync(`screen -XS ${config.agent_process} quit`);
     } catch (e) {
       console.log("ERROR: problem stopping screens. Are they running?");
       process.exit(0);
