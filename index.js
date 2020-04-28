@@ -31,7 +31,7 @@ if(!isNaN(parseFloat(uptime))) {
   console.log('Writing initial uptime of ', uptime);
 }
 
-async function checkForAlerts(mailer, skipMail) {
+async function checkStatuses(getRawProcessStatus) {
   let processStatus = {}, sysStatus = {}, ethStatus = {};
   processStatus = await utils.checkProcessDown();
   if (!processStatus.isError) {
@@ -42,7 +42,14 @@ async function checkForAlerts(mailer, skipMail) {
       console.log("Processes must be down, cannot get chain time info.");
     }
   }
-  const statusResult = { ...processStatus, sysStatus, ethStatus };
+
+  return getRawProcessStatus ? { processStatus, sysStatus, ethStatus } : { ...processStatus, sysStatus, ethStatus };
+}
+
+async function checkForAlerts(mailer, skipMail) {
+  const { processStatus, sysStatus, ethStatus } = await checkStatuses(true);
+  const statusResult = await checkStatuses();
+
   console.log(processStatus.isError, sysStatus.isError, ethStatus.isError);
 
   if (config.enable_autorestart && !isAttemptingRestart && (processStatus.isError || sysStatus.isError || ethStatus.isError)) {
@@ -53,16 +60,27 @@ async function checkForAlerts(mailer, skipMail) {
 
     if(result) {
       // restart worked
-      console.log('seems like restart worked!');
-      startCheckInterval();
-    } else {
-      console.log("Something went wrong with restart.");
-      config.enable_autorestart = false; //disable autorestart until a human comes and helps
+      let result = await checkStatuses(true);
+      if (!result.processStatus.isError && !result.sysStatus.isError && !result.ethStatus.isError) {
+        console.log('seems like restart worked!');
+        startCheckInterval();
+      } else {
+        console.log("Something went wrong validating restart.");
+        config.enable_autorestart = false; //disable autorestart until a human comes and helps
 
+        //message the human
+        await utils.notifyOfRestartFail();
+
+        //restart the checker so that they keep getting messages until they fix it
+        startCheckInterval();
+      }
+    } else {
+      console.log("Something went wrong with restart general.");
       //message the human
+      await utils.notifyOfRestartFail();
 
       //restart the checker so that they keep getting messages until they fix it
-
+      startCheckInterval();
     }
 
   } else if (!skipMail) {

@@ -214,6 +214,10 @@ async function getRemoteEthereumSuperblockContract() {
   return await rp(options);
 }
 
+async function notifyOfRestartFail() {
+  console.log('EMAIL HUMAN!!');
+}
+
 
 module.exports = {
   checkProcessDown,
@@ -222,5 +226,6 @@ module.exports = {
   sendMail,
   checkSyscoinChainTips,
   checkEthereumChainHeight,
-  configMailer
+  configMailer,
+  notifyOfRestartFail
 };
