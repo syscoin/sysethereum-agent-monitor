@@ -7,7 +7,7 @@ run = async () => {
     console.log('out: ', pkill);
     Object.values(pkill.output).forEach(item => {
       console.log("ITEMS:", item ? item.toString('utf8') : null);
-    }));
+    });
 
 
     //console.log('Stopping syscoind');
