@@ -26,7 +26,7 @@ const stopSys = async () => {
 
 const startSysEthAgent = async () => {
   try {
-    const sysethup = execSync('screen -S sysethagent ./start_agent.sh');
+    const sysethup = execSync('screen -dmS sysethagent ./start_agent.sh');
   } catch (e) {
     console.log("ERROR: problem stopping screens. Are they running?");
     console.log(e);
