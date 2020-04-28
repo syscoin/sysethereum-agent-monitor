@@ -3,7 +3,7 @@ const exec = require('exec-sh').promise;
 run = async () => {
   try {
     console.log('Stopping all screens.');
-    const pkill = await exec('screen -list');
+    const pkill = await exec('pwd', true;
     console.log('out: ', pkill);
 
 
