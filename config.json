@@ -23,5 +23,6 @@
   "sender_email": "dwasyluk@blockchainfoundry.co",
   "port": 9999,
   "enable_mail": false,
-  "email_retry_minutes": 30
+  "email_retry_minutes": 30,
+  "enable_autorestart": true
 }

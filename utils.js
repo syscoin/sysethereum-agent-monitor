@@ -12,7 +12,7 @@ let lastMailTime = null;
 
 const syscoinClient = new syscoin.SyscoinRpcClient({host: config.syscoin.host, rpcPort: config.syscoin.port, username: config.syscoin.user, password: config.syscoin.pass});
 
-async function checkProcessDown(mailer) {
+async function checkProcessDown(mailer, autorestart) {
   const processes = [constants.SYSETHEREUM_AGENT, constants.SYSCOIND, constants.SYSGETH, constants.SYSRELAYER];
   console.log('Checking process statuses');
   let status = {
@@ -25,7 +25,7 @@ async function checkProcessDown(mailer) {
     let list = await find('name', processName, false);
     if (list.length === 0) {
       let info;
-      if (config.enable_mail) {
+      if (config.enable_mail && !autorestart) {
         info = await sendMail(mailer, require('./messages/agent_process_down'));
         console.log(`${processName.toUpperCase()} DOWN! Sending email. ${info}`);
       }
@@ -115,7 +115,7 @@ async function getRemoteSyscoinChainTips() {
   return await rp(options);
 }
 
-async function checkSyscoinChainTips(mailer) {
+async function checkSyscoinChainTips(mailer, autorestart) {
   let full_local = await getLocalSyscoinChainTips();
   let full_remote = await getRemoteSyscoinChainTips();
 
@@ -131,7 +131,7 @@ async function checkSyscoinChainTips(mailer) {
       local: JSON.stringify(local),
       remote: JSON.stringify(remote)
     };
-    if(config.enable_mail) {
+    if(config.enable_mail && !autorestart) {
       await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'), tokenObj);
     }
     return { local, remote, localtips: full_local, remotetips: full_remote, isError: true };
@@ -141,7 +141,7 @@ async function checkSyscoinChainTips(mailer) {
   }
 }
 
-async function checkEthereumChainHeight(mailer) {
+async function checkEthereumChainHeight(mailer, autorestart) {
   let local = await getLocalEthereumChainHeight();
   local = local.geth_current_block;
 
@@ -156,7 +156,7 @@ async function checkEthereumChainHeight(mailer) {
       local: JSON.stringify(local),
       remote: JSON.stringify(remote)
     };
-    if (config.enable_mail) {
+    if (config.enable_mail && !autorestart) {
       await sendMail(mailer, require('./messages/agent_eth_chain_height'), tokenObj);
     }
     return { local, remote, isError: true };

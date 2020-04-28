@@ -7,6 +7,7 @@ const os = require('os');
 const config = require('./config');
 const utils = require('./utils');
 const constants = require('./constants');
+const autorestart = require('./autorestart');
 
 let mailConfig = utils.configMailer(config);
 let transporter = nodemailer.createTransport(mailConfig);
@@ -30,11 +31,15 @@ if(!isNaN(parseFloat(uptime))) {
 }
 
 async function checkForAlerts(mailer) {
-  const processStatus = await utils.checkProcessDown(mailer);
-  const sysStatus = await utils.checkSyscoinChainTips(mailer);
-  const ethStatus = await utils.checkEthereumChainHeight(mailer);
+  const processStatus = await utils.checkProcessDown(mailer, config.enable_autorestart);
+  const sysStatus = await utils.checkSyscoinChainTips(mailer, config.enable_autorestart);
+  const ethStatus = await utils.checkEthereumChainHeight(mailer, config.enable_autorestart);
+  const result = { ...processStatus, sysStatus, ethStatus };
+  if (config.enable_autorestart) {
+    autorestart(mailer, result);
+  }
 
-  return { ...processStatus, sysStatus, ethStatus };
+  return result;
 }
 
 // passive status checking
