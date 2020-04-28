@@ -1,9 +1,9 @@
-const exec = require('exec-sh').promise;
+const { child_process } = require('child_process');
 
 run = async () => {
   try {
     console.log('Stopping all screens.');
-    const pkill = await exec('pkill screen', true);
+    const pkill = child_process.spawnSync('pkill screen');
     console.log('out: ', pkill);
 
 
