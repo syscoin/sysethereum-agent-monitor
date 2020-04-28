@@ -65,6 +65,7 @@ async function checkForAlerts(mailer, skipMail) {
         console.log('seems like restart worked!');
         startCheckInterval();
       } else {
+        isAttemptingRestart = false;
         console.log("Something went wrong validating restart.");
         config.enable_autorestart = false; //disable autorestart until a human comes and helps
 
@@ -75,6 +76,7 @@ async function checkForAlerts(mailer, skipMail) {
         startCheckInterval();
       }
     } else {
+      isAttemptingRestart = false;
       console.log("Something went wrong with restart general.");
       //message the human
       await utils.notifyOfRestartFail();
