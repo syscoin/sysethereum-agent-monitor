@@ -62,8 +62,7 @@ const stopSysEthAgent = async () => {
     const syseth = execSync(`screen -XS ${config.agent_process} quit`);
   } catch (e) {
     console.log("ERROR: problem stopping screens. Are they running?");
-    console.log(e);
-    process.exit(0);
+    //console.log(e);
   }
 };
 
