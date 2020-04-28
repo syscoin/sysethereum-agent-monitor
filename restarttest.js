@@ -13,7 +13,12 @@ run = async () => {
     await sleep(3000);
 
     console.log('Stopping screens.');
-    const syseth = execSync('screen -XS agenttest quit');
+    try {
+      const syseth = execSync('screen -XS agenttest quit');
+    } catch (e) {
+      console.log("ERROR: problem stopping screens. Are they running?");
+      process.exit(0);
+    }
 
     // now restart syscoind
     console.log('Starting syscoind');
