@@ -37,7 +37,7 @@ async function checkForAlerts(mailer, skipMail) {
   const ethStatus = await utils.checkEthereumChainHeight();
   const statusResult = { ...processStatus, sysStatus, ethStatus };
 
-  if (config.enable_autorestart && !isAttemptingRestart) {
+  if (config.enable_autorestart && !isAttemptingRestart && processStatus.isError || sysStatus.isError || ethStatus.isError) {
     isAttemptingRestart = true;
     console.log('Attempting restart!!!');
     const result = await stopAndRestart();
