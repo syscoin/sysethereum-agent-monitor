@@ -38,6 +38,7 @@ async function checkForAlerts(mailer, skipMail) {
   const statusResult = { ...processStatus, sysStatus, ethStatus };
 
   if (config.enable_autorestart && !isAttemptingRestart && processStatus.isError || sysStatus.isError || ethStatus.isError) {
+    clearInterval(checkInterval);
     isAttemptingRestart = true;
     console.log('Attempting restart!!!');
     const result = await stopAndRestart();
