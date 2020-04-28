@@ -1,4 +1,4 @@
-const { child_process } = require('child_process');
+const child_process = require('child_process');
 
 run = async () => {
   try {
