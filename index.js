@@ -35,8 +35,12 @@ async function checkForAlerts(mailer, skipMail) {
   let processStatus, sysStatus, ethStatus;
   processStatus = await utils.checkProcessDown();
   if (!processStatus.isError) {
-    sysStatus = await utils.checkSyscoinChainTips();
-    ethStatus = await utils.checkEthereumChainHeight();
+    try {
+      sysStatus = await utils.checkSyscoinChainTips();
+      ethStatus = await utils.checkEthereumChainHeight();
+    } catch (e) {
+      console.log("Processes must be down, cannot get chain time info.");
+    }
   }
   const statusResult = { ...processStatus, sysStatus, ethStatus };
   console.log(processStatus.isError, sysStatus.isError, ethStatus.isError);
