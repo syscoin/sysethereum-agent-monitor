@@ -1,9 +1,9 @@
-const child_process = require('child_process');
+const { spawnSync} = require('child_process');
 
 run = async () => {
   try {
     console.log('Stopping all screens.');
-    const pkill = child_process.spawnSync('pkill screen');
+    const pkill = spawnSync('pkill screen');
     console.log('out: ', pkill);
 
 
