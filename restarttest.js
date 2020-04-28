@@ -4,8 +4,9 @@ run = async () => {
   try {
     console.log('Stopping all screens.');
     const pkill = spawnSync('screen', ['-list']);
-    console.log('out: ', pkill, Object.values(pkill.output).forEach(item => {
-      console.log(item ? item.toString('utf8') : null);
+    console.log('out: ', pkill);
+    Object.values(pkill.output).forEach(item => {
+      console.log("ITEMS:", item ? item.toString('utf8') : null);
     }));
 
 
