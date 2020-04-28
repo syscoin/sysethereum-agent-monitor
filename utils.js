@@ -12,7 +12,7 @@ let lastMailTime = null;
 
 const syscoinClient = new syscoin.SyscoinRpcClient({host: config.syscoin.host, rpcPort: config.syscoin.port, username: config.syscoin.user, password: config.syscoin.pass});
 
-async function checkProcessDown(mailer, autorestart) {
+async function checkProcessDown(mailer) {
   const processes = [constants.SYSETHEREUM_AGENT, constants.SYSCOIND, constants.SYSGETH, constants.SYSRELAYER];
   console.log('Checking process statuses');
   let status = {
@@ -25,10 +25,6 @@ async function checkProcessDown(mailer, autorestart) {
     let list = await find('name', processName, false);
     if (list.length === 0) {
       let info;
-      if (config.enable_mail && !autorestart) {
-        info = await sendMail(mailer, require('./messages/agent_process_down'));
-        console.log(`${processName.toUpperCase()} DOWN! Sending email. ${info}`);
-      }
       status[processName] = false;
     } else {
       console.log(`${list.length} running ${processName}, no action needed.`);
@@ -127,13 +123,6 @@ async function checkSyscoinChainTips(mailer, autorestart) {
     console.log('Chain mismatch');
     console.log('Local chain:', local);
     console.log('Remote chain:', remote);
-    const tokenObj = {
-      local: JSON.stringify(local),
-      remote: JSON.stringify(remote)
-    };
-    if(config.enable_mail && !autorestart) {
-      await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'), tokenObj);
-    }
     return { local, remote, localtips: full_local, remotetips: full_remote, isError: true };
   } else {
     console.log('Chain height and hash match.');
@@ -152,13 +141,6 @@ async function checkEthereumChainHeight(mailer, autorestart) {
     console.log('Eth chain has fallen behind!');
     console.log('Local chain:', local);
     console.log('Remote chain:', remote);
-    const tokenObj = {
-      local: JSON.stringify(local),
-      remote: JSON.stringify(remote)
-    };
-    if (config.enable_mail && !autorestart) {
-      await sendMail(mailer, require('./messages/agent_eth_chain_height'), tokenObj);
-    }
     return { local, remote, isError: true };
   } else {
     let diff = remote - local;

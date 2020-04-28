@@ -7,11 +7,12 @@ const os = require('os');
 const config = require('./config');
 const utils = require('./utils');
 const constants = require('./constants');
-const autorestart = require('./autorestart');
+const { stopAndRestart } = require('./processUtils');
 
 let mailConfig = utils.configMailer(config);
 let transporter = nodemailer.createTransport(mailConfig);
 let checkInterval;
+let isAttemptingRestart = false;
 
 // see if we have existing uptime data
 let uptime = utils.readFile(constants.UPTIME_FILE);
@@ -31,19 +32,75 @@ if(!isNaN(parseFloat(uptime))) {
 }
 
 async function checkForAlerts(mailer) {
-  const processStatus = await utils.checkProcessDown(mailer, config.enable_autorestart);
-  const sysStatus = await utils.checkSyscoinChainTips(mailer, config.enable_autorestart);
-  const ethStatus = await utils.checkEthereumChainHeight(mailer, config.enable_autorestart);
+  const processStatus = await utils.checkProcessDown();
+  const sysStatus = await utils.checkSyscoinChainTips();
+  const ethStatus = await utils.checkEthereumChainHeight();
   const result = { ...processStatus, sysStatus, ethStatus };
-  if (config.enable_autorestart) {
-    autorestart(mailer, result);
+
+  if (config.enable_autorestart && !isAttemptingRestart) {
+    isAttemptingRestart = true;
+    console.log('Attempting restart!!!');
+    const result = await stopAndRestart(mailer, result);
+
+    if(result) {
+      // restart worked
+      console.log('seems like restart worked!');
+      startCheckInterval();
+    } else {
+      console.log("Something went wrong with restart.");
+      config.enable_autorestart = false; //disable autorestart until a human comes and helps
+
+      //message the human
+
+      //restart the checker so that they keep getting messages until they fix it
+
+    }
+
+  } else {
+    if (isAttemptingRestart) {
+      isAttemptingRestart = false;
+    }
+
+    if (config.enable_mail && config.enable_autorestart && processStatus.isError) {
+      let processName;
+      Object.keys(processStatus).forEach(key => {
+        if(key !== 'isError' && !proessStatus[key]) {
+          processName = key;
+        }
+      });
+      let info = await utils.sendMail(mailer, require('./messages/agent_process_down'));
+      console.log(`${processName.toUpperCase()} DOWN! Sending email. ${info}`);
+      return;
+    }
+
+    if (config.enable_mail && config.enable_autorestart && sysStatus.isError) {
+      const tokenObj = {
+        local: JSON.stringify(sysStatus.local),
+        remote: JSON.stringify(sysStatus.remote)
+      };
+      await utils.sendMail(mailer, require('./messages/agent_sys_chain_mismatch'), tokenObj);
+      return;
+    }
+
+    if (config.enable_mail && config.enable_autorestart && ethStatus.isError) {
+      const tokenObj = {
+        local: JSON.stringify(ethStatus.local),
+        remote: JSON.stringify(ethStatus.remote)
+      };
+      await utils.sendMail(mailer, require('./messages/agent_eth_chain_height'), tokenObj);
+      return;
+    }
   }
 
   return result;
 }
 
-// passive status checking
-checkInterval = setInterval(checkForAlerts, config.interval * 1000, transporter);
+function startCheckInterval() {
+  // passive status checking
+  checkInterval = setInterval(checkForAlerts, config.interval * 1000, transporter);
+}
+
+startCheckInterval();
 
 // webserver for proactive checks
 app.use(cors());
