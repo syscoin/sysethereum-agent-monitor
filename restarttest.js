@@ -1,12 +1,13 @@
-const { spawnSync} = require('child_process');
+const { execSync } = require('child_process');
 
 run = async () => {
   try {
     console.log('Stopping all screens.');
-    const pkill = spawnSync('pkill', ['screen']);
+    const pkill = execSync('screen -XS agenttest quit');
+    console.log('out', pkill);
     Object.values(pkill.output).forEach(item => {
       if (!item) return;
-      const decoded = item.toString('utf8')
+      const decoded = item.toString('utf8');
       if (decoded && decoded !== '')
       console.log("ITEMS:", decoded);
     });
