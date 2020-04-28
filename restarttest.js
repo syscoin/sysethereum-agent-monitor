@@ -3,8 +3,8 @@ const exec = require('exec-sh').promise;
 run = async () => {
   try {
     console.log('Stopping all screens.');
-    const pkill = await exec('pkill screen', true);
-    console.log('out: ', pkill.stdout, pkill.stderr);
+    const pkill = await exec('pkill screen');
+    //console.log('out: ', pkill.stdout, pkill.stderr);
 
 
     console.log('Stopping syscoind');
