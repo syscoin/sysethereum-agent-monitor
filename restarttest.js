@@ -2,23 +2,20 @@ const { execSync } = require('child_process');
 
 run = async () => {
   try {
-    console.log('Stopping all screens.');
-    const pkill = execSync('screen -XS agenttest quit');
-    console.log('out', pkill);
-    Object.values(pkill.output).forEach(item => {
-      if (!item) return;
-      const decoded = item.toString('utf8');
-      if (decoded && decoded !== '')
-      console.log("ITEMS:", decoded);
-    });
+    console.log('Stopping syscoind');
+    const syskill = execSync('syscoin-cli stop');
 
+    console.log('Stopping screens.');
+    const syseth = execSync('screen -XS agenttest quit');
 
-    //console.log('Stopping syscoind');
-    //const sysstop = await exec('syscoin-cli stop');
-    //console.log('out: ', sysstop.stdout, sysstop.stderr);
-    //
-    //console.log("Results:");
-    //console.log(pkill, sysstop);
+    // now restart syscoind
+    console.log('Starting syscoind');
+    const sysup = execSync('syscoind');
+
+    // now restart sysethagent, in a screen
+    console.log('Starting sysethagent');
+    const sysup = execSync('screen -S sysethagent ./start_agent.sh');
+
   } catch (e) {
     console.log('Error: ', e);
     console.log('Stderr: ', e.stderr);
