@@ -36,8 +36,9 @@ async function checkForAlerts(mailer, skipMail) {
   const sysStatus = await utils.checkSyscoinChainTips();
   const ethStatus = await utils.checkEthereumChainHeight();
   const statusResult = { ...processStatus, sysStatus, ethStatus };
+  console.log(JSON.stringify(statusResult));
 
-  if (config.enable_autorestart && !isAttemptingRestart && processStatus.isError || sysStatus.isError || ethStatus.isError) {
+  if (config.enable_autorestart && !isAttemptingRestart && (processStatus.isError || sysStatus.isError || ethStatus.isError)) {
     clearInterval(checkInterval);
     isAttemptingRestart = true;
     console.log('Attempting restart!!!');
@@ -106,6 +107,7 @@ startCheckInterval();
 // webserver for proactive checks
 app.use(cors());
 app.get('/status', async (req, res) => {
+  console.log("Http ping");
   const status = await checkForAlerts(transporter, true);
 
   return res.send({ ...status});
