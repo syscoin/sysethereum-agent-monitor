@@ -6,6 +6,7 @@ run = async () => {
     const pkill = spawnSync('screen', ['-list']);
     console.log('out: ', pkill);
     Object.values(pkill.output).forEach(item => {
+      if (!item) return;
       console.log("ITEMS:", item ? item.toString('utf8') : null);
     });
 
