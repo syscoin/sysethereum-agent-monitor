@@ -4,7 +4,9 @@ run = async () => {
   try {
     console.log('Stopping all screens.');
     const pkill = spawnSync('screen', ['list']);
-    console.log('out: ', pkill);
+    console.log('out: ', pkill, Object.values(pkill.output).forEach(item => {
+      console.log(JSON.stringify(item));
+    }));
 
 
     //console.log('Stopping syscoind');
