@@ -36,7 +36,7 @@ async function checkForAlerts(mailer, skipMail) {
   const sysStatus = await utils.checkSyscoinChainTips();
   const ethStatus = await utils.checkEthereumChainHeight();
   const statusResult = { ...processStatus, sysStatus, ethStatus };
-  console.log(JSON.stringify(statusResult));
+  console.log(processStatus.isError, sysStatus.isError, ethStatus.isError);
 
   if (config.enable_autorestart && !isAttemptingRestart && (processStatus.isError || sysStatus.isError || ethStatus.isError)) {
     clearInterval(checkInterval);
