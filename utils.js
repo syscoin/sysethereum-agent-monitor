@@ -36,6 +36,15 @@ async function checkProcessDown(mailer) {
     }
   });
 
+  let isError = false;
+  Object.values(status).forEach(value => {
+    if (!value && !isError) {
+      isError = true;
+    }
+  });
+
+  status.isError = isError;
+
   return status;
 }
 
@@ -125,10 +134,10 @@ async function checkSyscoinChainTips(mailer) {
     if(config.enable_mail) {
       await sendMail(mailer, require('./messages/agent_sys_chain_mismatch'), tokenObj);
     }
-    return { local, remote, localtips: full_local, remotetips: full_remote };
+    return { local, remote, localtips: full_local, remotetips: full_remote, isError: true };
   } else {
     console.log('Chain height and hash match.');
-    return { local, remote, localtips: full_local, remotetips: full_remote  };
+    return { local, remote, localtips: full_local, remotetips: full_remote, isError: false  };
   }
 }
 
@@ -150,11 +159,11 @@ async function checkEthereumChainHeight(mailer) {
     if (config.enable_mail) {
       await sendMail(mailer, require('./messages/agent_eth_chain_height'), tokenObj);
     }
-    return { local, remote };
+    return { local, remote, isError: true };
   } else {
     let diff = remote - local;
     console.log(`Eth height within threshold, local/remote height difference: ${diff}`);
-    return { local, remote };
+    return { local, remote, isError: false };
   }
 }
 
