@@ -17,10 +17,15 @@ const startSys = async () => {
 
 const stopSys = async () => {
   console.log('Stopping syscoind');
-  const syskill = execSync('syscoin-cli stop');
+  try {
+    const syskill = execSync('syscoin-cli stop');
 
-  // wait for sys to shut down
-  return await sleep(10);
+
+    // wait for sys to shut down
+    return await sleep(10);
+  } catch (e) {
+    console.log("Couldn't stop syscoind, is it running?");
+  }
 };
 
 
