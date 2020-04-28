@@ -13,11 +13,12 @@ run = async () => {
     // wait for sys to shut down
     await sleep(3000);
 
-    console.log('Stopping screens.');
+    console.log(`Stopping screens: ${config.agent_process}`);
     try {
       const syseth = execSync(`screen -XS ${config.agent_process} quit`);
     } catch (e) {
       console.log("ERROR: problem stopping screens. Are they running?");
+      console.log(e);
       process.exit(0);
     }
 
