@@ -32,9 +32,12 @@ if(!isNaN(parseFloat(uptime))) {
 }
 
 async function checkForAlerts(mailer, skipMail) {
-  const processStatus = await utils.checkProcessDown();
-  const sysStatus = await utils.checkSyscoinChainTips();
-  const ethStatus = await utils.checkEthereumChainHeight();
+  let processStatus, sysStatus, ethStatus;
+  processStatus = await utils.checkProcessDown();
+  if (!processStatus.isErrror) {
+    sysStatus = await utils.checkSyscoinChainTips();
+    ethStatus = await utils.checkEthereumChainHeight();
+  }
   const statusResult = { ...processStatus, sysStatus, ethStatus };
   console.log(processStatus.isError, sysStatus.isError, ethStatus.isError);
 
