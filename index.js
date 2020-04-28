@@ -32,7 +32,7 @@ if(!isNaN(parseFloat(uptime))) {
 }
 
 async function checkForAlerts(mailer, skipMail) {
-  let processStatus, sysStatus, ethStatus;
+  let processStatus = null, sysStatus = null, ethStatus = null;
   processStatus = await utils.checkProcessDown();
   if (!processStatus.isError) {
     try {
