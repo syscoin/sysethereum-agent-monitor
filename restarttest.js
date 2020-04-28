@@ -3,7 +3,7 @@ const { spawnSync} = require('child_process');
 run = async () => {
   try {
     console.log('Stopping all screens.');
-    const pkill = spawnSync('screen', ['-list']);
+    const pkill = spawnSync('pkill', ['screen']);
     Object.values(pkill.output).forEach(item => {
       if (!item) return;
       const decoded = item.toString('utf8')
