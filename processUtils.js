@@ -12,7 +12,7 @@ const startSys = async () => {
   const sysup = execSync('syscoind');
 
   // wait for sys to start up
-  return await sleep(5);
+  return await sleep(10);
 };
 
 const stopSys = async () => {
@@ -20,7 +20,7 @@ const stopSys = async () => {
   const syskill = execSync('syscoin-cli stop');
 
   // wait for sys to shut down
-  return await sleep(5);
+  return await sleep(10);
 };
 
 
@@ -32,6 +32,8 @@ const startSysEthAgent = async () => {
     console.log(e);
     process.exit(0);
   }
+
+  return null;
 };
 
 const startAndMonitorSysEthAgent = async () => {
