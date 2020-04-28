@@ -24,7 +24,7 @@ run = async () => {
     const sysethup = execSync('screen -S sysethagent ./start_agent.sh');
 
   } catch (e) {
-    //sconsole.log('Error: ', e);
+    console.log('Error: ', e);
     //console.log('Stderr: ', e.stderr);
     //console.log('Stdout: ', e.stdout);
 
