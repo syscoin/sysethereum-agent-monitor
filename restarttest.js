@@ -7,7 +7,7 @@ run = async () => {
     Object.values(pkill.output).forEach(item => {
       if (!item) return;
       const decoded = item.toString('utf8')
-      console.log("ITEMS:", decoded & decoded !== '' ? decoded);
+      console.log("ITEMS:", decoded && decoded !== '' ? decoded);
     });
 
 
