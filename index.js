@@ -7,7 +7,7 @@ const os = require('os');
 const config = require('./config');
 const utils = require('./utils');
 const constants = require('./constants');
-const { stopAndRestart } = require('./');
+const { stopAndRestart } = require('./processUtils');
 
 let mailConfig = utils.configMailer(config);
 let transporter = nodemailer.createTransport(mailConfig);
