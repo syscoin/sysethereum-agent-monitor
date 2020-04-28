@@ -34,7 +34,7 @@ if(!isNaN(parseFloat(uptime))) {
 async function checkForAlerts(mailer, skipMail) {
   let processStatus, sysStatus, ethStatus;
   processStatus = await utils.checkProcessDown();
-  if (!processStatus.isErrror) {
+  if (!processStatus.isError) {
     sysStatus = await utils.checkSyscoinChainTips();
     ethStatus = await utils.checkEthereumChainHeight();
   }
