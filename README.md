@@ -37,10 +37,6 @@ https://github.com/blockchainfoundryinc/setenv for simplified configuration.
 `notify_address` - Email address to which notifications will be sent. 
 `sender_email` - Email address from which notifications will be sent. 
 `port` - Port the HTTP server will run on for `/status`. 
-`enable_mail` - Enable email alerts. 
-`email_retry_minutes` - Amount of time in minutes to wait between nag email alerts when critical services are down. 
-`enable_autorestart` - Enable autorestart functionality.  
-`agent_process` - Screen session name to run the sysethereum-agent process under (this tool uses `screen`). 
   
 ## Usage 
 It is recommended you configure the `sysethereum-agent-monitor` to start when the machine restarts in order to be alerts 
