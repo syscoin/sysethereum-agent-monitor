@@ -34,7 +34,7 @@ https://github.com/blockchainfoundryinc/setenv for simplified configuration.
 `syscoin.pass` - Syscoin RPC password.  
 `syscoin.port` - Syscoin RPC port.  
 `explorer_url` - URL to Syscoin block explorer that utilizes [BCF Explorer API](https://github.com/blockchainfoundryinc/explorer). No trailing slash.  
-`notify_address` - Email address to which notifications will be sent. 
+`notify_address` - Email address to which notifications will be sent.
 `sender_email` - Email address from which notifications will be sent. 
 `port` - Port the HTTP server will run on for `/status`. 
   
