@@ -64,10 +64,10 @@ async function sendMail(mailer, message, tokenObj = null, skipTimeCheck) {
     message.text = jtr.replace(tokenObj, message.text);
     message.html = jtr.replace(tokenObj, message.html);
   }
-  console.log("message:", JSON.stringify(message));
+  // console.log("message:", JSON.stringify(message));
 
   try {
-    let info = await mailer.sendMail(message);
+    const info = await mailer.sendMail(message);
     if (!skipTimeCheck) {
       lastMailTime = Date.now();
     }
