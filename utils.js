@@ -44,15 +44,17 @@ async function checkProcessDown(mailer) {
   return status;
 }
 
-async function sendMail(mailer, message, tokenObj = null) {
+async function sendMail(mailer, message, tokenObj = null, skipTimeCheck) {
   console.log('sendmail');
 
-  const emailTimeout = config.email_retry_minutes * 1000 * 60; // minutes
-  console.log('Last email time:', lastMailTime, emailTimeout, Date.now());
-  if (lastMailTime !== null && Date.now() < (lastMailTime + emailTimeout)) {
-    const time = (lastMailTime + emailTimeout) - Date.now();
-    console.log('Waiting to send next alert email. Ms remaining:', time);
-    return;
+  if (!skipTimeCheck) {
+    const emailTimeout = config.email_retry_minutes * 1000 * 60; // minutes
+    console.log('Last email time:', lastMailTime, emailTimeout, Date.now());
+    if (lastMailTime !== null && Date.now() < (lastMailTime + emailTimeout)) {
+      const time = (lastMailTime + emailTimeout) - Date.now();
+      console.log('Waiting to send next alert email. Ms remaining:', time);
+      return;
+    }
   }
 
   message.to = config.notify_email;
@@ -217,9 +219,9 @@ async function getRemoteEthereumSuperblockContract() {
 async function notifyOfRestartFail(mailer, restartSuccess) {
   console.log('EMAIL HUMAN!!');
   if (restartSuccess) {
-    await sendMail(mailer, require('./messages/agent_restart_fail'));
+    await sendMail(mailer, require('./messages/agent_restart_fail'), null, true);
   } else {
-    await sendMail(mailer, require('./messages/agent_restart_success'));
+    await sendMail(mailer, require('./messages/agent_restart_success'), null, true);
   }
 }
 

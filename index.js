@@ -56,7 +56,7 @@ async function checkForAlerts(mailer, skipMail) {
     clearInterval(checkInterval);
     isAttemptingRestart = true;
     console.log('Attempting restart!!!');
-    await utils.sendMail(mailer, require('./messages/agent_restart_in_progress'));
+    await utils.sendMail(mailer, require('./messages/agent_restart_in_progress'), null, true);
     const result = await stopAndRestart();
 
     if(result) {
@@ -98,7 +98,7 @@ async function checkForAlerts(mailer, skipMail) {
     if (config.enable_mail && processStatus.isError) {
       let processName;
       Object.keys(processStatus).forEach(key => {
-        if(key !== 'isError' && !proessStatus[key]) {
+        if(key !== 'isError' && !processStatus[key]) {
           processName = key;
         }
       });
