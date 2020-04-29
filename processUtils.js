@@ -77,7 +77,7 @@ const startAll = async () => {
   // now restart sysethagent and syscoind, in a screen
   console.log('Starting syscoind + sysethagent');
   await startSys();
-  //await startAndMonitorSysEthAgent();
+  await startAndMonitorSysEthAgent();
 };
 
 const stopAndRestart = async () => {

@@ -55,6 +55,8 @@ async function sendMail(mailer, message, tokenObj = null, skipTimeCheck) {
       console.log('Waiting to send next alert email. Ms remaining:', time);
       return;
     }
+  } else {
+    lastMailTime = 0;
   }
 
   message.to = config.notify_email;
