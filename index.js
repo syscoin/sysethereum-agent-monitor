@@ -56,6 +56,7 @@ async function checkForAlerts(mailer, skipMail) {
     clearInterval(checkInterval);
     isAttemptingRestart = true;
     console.log('Attempting restart!!!');
+    await utils.sendMail(mailer, require('./messages/agent_restart_in_progress'));
     const result = await stopAndRestart();
 
     if(result) {
