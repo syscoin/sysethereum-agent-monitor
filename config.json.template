@@ -1,0 +1,29 @@
+{
+  "interval": 5,
+  "agent_id": "NVirginia1-52.207.94.153",
+  "infura_api": "",
+  "eth_block_threshold": 1440,
+  "smtp": {
+    "host": "",
+    "auth": {
+      "user": "",
+      "pass": ""
+    },
+    "port": 465,
+    "secure": true
+  },
+  "syscoin": {
+    "host": "localhost",
+    "user": "u",
+    "pass": "p",
+    "port": "1234"
+  },
+  "explorer_url": "https://explorer.blockchainfoundry.co",
+  "notify_email": "sysethagent@blockchainfoundry.co",
+  "sender_email": "notifier@blockchainfoundry.co",
+  "port": 9999,
+  "enable_mail": true,
+  "email_retry_minutes": 10,
+  "enable_autorestart": true,
+  "agent_process": "sysethagent"
+}
