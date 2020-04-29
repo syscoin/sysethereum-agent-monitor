@@ -14,7 +14,7 @@ const syscoinClient = new syscoin.SyscoinRpcClient({host: config.syscoin.host, r
 
 async function checkProcessDown(mailer) {
   const processes = [constants.SYSETHEREUM_AGENT, constants.SYSCOIND, constants.SYSGETH, constants.SYSRELAYER];
-  console.log('Checking process statuses', processes);
+  console.log('Checking process statuses');
   let status = {
     [constants.SYSETHEREUM_AGENT]: false,
     [constants.SYSCOIND]: false,

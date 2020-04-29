@@ -47,11 +47,11 @@ async function checkStatuses(getRawProcessStatus) {
 }
 
 async function checkForAlerts(mailer, skipMail) {
+  console.log('check alerts',config.enable_autorestart, isAttemptingRestart);
   const { processStatus, sysStatus, ethStatus } = await checkStatuses(true);
   const statusResult = await checkStatuses();
 
   console.log(processStatus.isError, sysStatus.isError, ethStatus.isError);
-
   if (config.enable_autorestart && !isAttemptingRestart && (processStatus.isError || sysStatus.isError || ethStatus.isError)) {
     clearInterval(checkInterval);
     isAttemptingRestart = true;
