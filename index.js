@@ -20,7 +20,7 @@ if(!isNaN(parseFloat(uptime))) {
   console.log('UPTIME:', uptime);
   // get current uptime and see if we've restarted
   if (os.uptime() < uptime) {
-    utils.sendMail(transporter, require('./messages/agent_os_restarted'));
+    await utils.sendMail(transporter, require('./messages/agent_os_restarted'));
   }
 
   // update the uptime
