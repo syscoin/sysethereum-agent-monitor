@@ -31,7 +31,7 @@ if(!isNaN(parseFloat(uptime))) {
   console.log('Writing initial uptime of ', uptime);
 }
 
-async function checkStatuses(getRawProcessStatus) {
+async function checkProcessStatuses(getRawProcessStatus) {
   let processStatus = {}, sysStatus = {}, ethStatus = {};
   processStatus = await utils.checkProcessDown();
   if (!processStatus.isError) {
@@ -48,20 +48,33 @@ async function checkStatuses(getRawProcessStatus) {
 
 async function checkForAlerts(mailer, skipMail) {
   console.log('check alerts',config.enable_autorestart, isAttemptingRestart);
-  const { processStatus, sysStatus, ethStatus } = await checkStatuses(true);
-  const statusResult = await checkStatuses();
+  const { processStatus, sysStatus, ethStatus } = await checkProcessStatuses(true);
+  const statusResult = await checkProcessStatuses();
 
   console.log(processStatus.isError, sysStatus.isError, ethStatus.isError);
   if (config.enable_autorestart && !isAttemptingRestart && (processStatus.isError || sysStatus.isError || ethStatus.isError)) {
     clearInterval(checkInterval);
     isAttemptingRestart = true;
     console.log('Attempting restart!!!');
-    await utils.sendMail(mailer, require('./messages/agent_restart_in_progress'), null, true);
+    let reason;
+    if (processStatus.isError) {
+      reason = 'One or more key processes (agent, syscoind, sysgeth, sysrelayer) has stopped unexpectedly.';
+    } else if (sysStatus.isError) {
+      reason = 'Syscoin full node is on wrong chain.';
+    } else if (ethStatus.isError) {
+      reason = 'Ethereum geth out of sync.';
+    } else {
+      reason = 'Cannot determine!';
+    }
+    const tokenObj = {
+      reason
+    };
+    await utils.sendMail(mailer, require('./messages/agent_restart_in_progress'), tokenObj, true);
     const result = await stopAndRestart();
 
     if(result) {
       // restart worked
-      let result = await checkStatuses(true);
+      let result = await checkProcessStatuses(true);
       if (!result.processStatus.isError && !result.sysStatus.isError && !result.ethStatus.isError) {
         console.log('seems like restart worked!');
         startCheckInterval();
@@ -140,7 +153,7 @@ startCheckInterval();
 app.use(cors());
 app.get('/status', async (req, res) => {
   console.log("Http ping");
-  const status = await checkStatuses(false);
+  const status = await checkProcessStatuses(false);
 
   return res.send({ ...status});
 });
