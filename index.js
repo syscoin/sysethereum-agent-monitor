@@ -94,7 +94,7 @@ async function checkForAlerts(mailer, skipMail) {
       isAttemptingRestart = false;
     }
 
-    if (config.enable_mail && && processStatus.isError) {
+    if (config.enable_mail && processStatus.isError) {
       let processName;
       Object.keys(processStatus).forEach(key => {
         if(key !== 'isError' && !proessStatus[key]) {
