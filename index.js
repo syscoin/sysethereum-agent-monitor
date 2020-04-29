@@ -140,7 +140,7 @@ startCheckInterval();
 app.use(cors());
 app.get('/status', async (req, res) => {
   console.log("Http ping");
-  const status = await checkStatuses(true);
+  const status = await checkStatuses(false);
 
   return res.send({ ...status});
 });
