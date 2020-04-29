@@ -214,8 +214,13 @@ async function getRemoteEthereumSuperblockContract() {
   return await rp(options);
 }
 
-async function notifyOfRestartFail() {
+async function notifyOfRestartFail(mailer, restartSuccess) {
   console.log('EMAIL HUMAN!!');
+  if (restartSuccess) {
+    await utils.sendMail(mailer, require('./messages/agent_restart_fail'));
+  } else {
+    await utils.sendMail(mailer, require('./messages/agent_restart_success'));
+  }
 }
 
 

@@ -64,13 +64,16 @@ async function checkForAlerts(mailer, skipMail) {
       if (!result.processStatus.isError && !result.sysStatus.isError && !result.ethStatus.isError) {
         console.log('seems like restart worked!');
         startCheckInterval();
+
+        // notify human
+        await utils.notifyOfRestartFail(mailer, true);
       } else {
         isAttemptingRestart = false;
         console.log("Something went wrong validating restart.");
         config.enable_autorestart = false; //disable autorestart until a human comes and helps
 
         //message the human
-        await utils.notifyOfRestartFail();
+        await utils.notifyOfRestartFail(mailer, false);
 
         //restart the checker so that they keep getting messages until they fix it
         startCheckInterval();
@@ -78,20 +81,20 @@ async function checkForAlerts(mailer, skipMail) {
     } else {
       isAttemptingRestart = false;
       console.log("Something went wrong with restart general.");
+
       //message the human
-      await utils.notifyOfRestartFail();
+      await utils.notifyOfRestartFail(mailer, false);
 
       //restart the checker so that they keep getting messages until they fix it
       startCheckInterval();
     }
 
   } else if (!skipMail) {
-    console.log('sTandardmail');
     if (isAttemptingRestart) {
       isAttemptingRestart = false;
     }
 
-    if (config.enable_mail && config.enable_autorestart && processStatus.isError) {
+    if (config.enable_mail && && processStatus.isError) {
       let processName;
       Object.keys(processStatus).forEach(key => {
         if(key !== 'isError' && !proessStatus[key]) {
@@ -103,7 +106,7 @@ async function checkForAlerts(mailer, skipMail) {
       return;
     }
 
-    if (config.enable_mail && config.enable_autorestart && sysStatus.isError) {
+    if (config.enable_mail && sysStatus.isError) {
       const tokenObj = {
         local: JSON.stringify(sysStatus.local),
         remote: JSON.stringify(sysStatus.remote)
@@ -112,7 +115,7 @@ async function checkForAlerts(mailer, skipMail) {
       return;
     }
 
-    if (config.enable_mail && config.enable_autorestart && ethStatus.isError) {
+    if (config.enable_mail && ethStatus.isError) {
       const tokenObj = {
         local: JSON.stringify(ethStatus.local),
         remote: JSON.stringify(ethStatus.remote)
