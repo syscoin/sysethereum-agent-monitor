@@ -48,7 +48,7 @@ const startAndMonitorSysEthAgent = async () => {
   while(!sysEthUp) {
     await startSysEthAgent();
     console.log("Monitoring for agent up, attempt ", count);
-    await sleep(20);
+    await sleep(8);
 
     let list = await find('name', SYSETHEREUM_AGENT, false);
     if (list.length === 1) {
@@ -77,7 +77,7 @@ const startAll = async () => {
   // now restart sysethagent and syscoind, in a screen
   console.log('Starting syscoind + sysethagent');
   await startSys();
-  await startAndMonitorSysEthAgent();
+  //await startAndMonitorSysEthAgent();
 };
 
 const stopAndRestart = async () => {
