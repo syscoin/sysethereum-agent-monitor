@@ -2,20 +2,26 @@
 # sysethereum-agent-monitor  
   
 A javascript service for monitoring critical [sysethereum-agents](https://github.com/syscoin/sysethereum-agents) process and details and pushing email alerts  
-in the case of errors or issues so that operators can take actions on their agent.  
+in the case of errors or issues so that operators can take actions on their agent. This service exposes a REST endpoint
+at `http://ip:[port]/status` for integration with external monitoring systems. 
 
 The service monitors several aspects of agent operation:
  - Verifies `syscoind`, `sysrelayer.nod`, `sysgeth.nod`, and `sysethereum-agents` processes are running.
- - Verifies local chain data matches remote chain data provided by `explorer_url` using data from `getchaintips` RPC.
+ - Verifies local Syscoin and Ethereum chain data matches remote chain data provided by `explorer_url` using data from `getchaintips` RPC.
  - Alerts agent operators anytime the host machine restarts
+ 
+This service can automatically restart all critical sysethereum agent processes if an error is detected. If automatic restart 
+fails the service will notify operators for further inspection.
   
 ## Installation  
   
 `npm i`  
   
 ## Configuration   
-Edit `config.json` to configure the monitor for your environment. This tool uses 
+Use `config.json.template` to configure the monitor for your environment. This tool uses 
 https://github.com/blockchainfoundryinc/setenv for simplified configuration. 
+
+*To complete configuration you must run `CONF_JSON=config.json.template npm run setenv`.*
   
 **Config Parameters:**  
 `interval` - (seconds) how often to check system statuses.  
@@ -28,10 +34,18 @@ https://github.com/blockchainfoundryinc/setenv for simplified configuration.
 `syscoin.pass` - Syscoin RPC password.  
 `syscoin.port` - Syscoin RPC port.  
 `explorer_url` - URL to Syscoin block explorer that utilizes [BCF Explorer API](https://github.com/blockchainfoundryinc/explorer). No trailing slash.  
-`nottify_address` - Email address which notifications will be sent.  
+`notify_address` - Email address to which notifications will be sent.
+`sender_email` - Email address from which notifications will be sent.
+`port` - Port the HTTP server will run on for `/status`.
+`enable_mail` - Enable email alerts.
+`email_retry_minutes` - Amount of time in minutes to wait between nag email alerts when critical services are down.
+`enable_autorestart` - Enable autorestart functionality. 
+`agent_process` - Screen session name to run the sysethereum-agent process under (this tool uses `screen`)  
   
 ## Usage 
-It is recommended you configure the `sysethereum-agent-monitor` to start when the machine restarts in order to be alerts of unexpected restarts. For more information on setting up `sysethereum-agent-monitor` to start automatically on reboot read [the PM2 docs.](https://pm2.keymetrics.io/docs/usage/startup/)
+It is recommended you configure the `sysethereum-agent-monitor` to start when the machine restarts in order to be alerts 
+of unexpected restarts. For more information on setting up `sysethereum-agent-monitor` to start automatically 
+on reboot read [the PM2 docs.](https://pm2.keymetrics.io/docs/usage/startup/)
 
 After configuration: `npm start`.  
   
