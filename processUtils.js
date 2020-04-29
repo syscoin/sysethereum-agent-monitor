@@ -87,7 +87,7 @@ const stopAndRestart = async () => {
     await startAll();
 
     // wait a sec before we return so that things can sync, etc, before the next alert check
-    await sleep(10);
+    await sleep(5);
 
     return true;
 

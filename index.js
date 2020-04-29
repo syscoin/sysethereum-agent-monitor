@@ -86,6 +86,7 @@ async function checkForAlerts(mailer, skipMail) {
     }
 
   } else if (!skipMail) {
+    console.log('sTandardmail');
     if (isAttemptingRestart) {
       isAttemptingRestart = false;
     }
@@ -135,7 +136,7 @@ startCheckInterval();
 app.use(cors());
 app.get('/status', async (req, res) => {
   console.log("Http ping");
-  const status = await checkForAlerts(transporter, true);
+  const status = await checkStatuses(transporter, true);
 
   return res.send({ ...status});
 });
