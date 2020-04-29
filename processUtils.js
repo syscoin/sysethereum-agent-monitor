@@ -55,7 +55,7 @@ const startAndMonitorSysEthAgent = async () => {
       console.log(`Monitor: ${SYSETHEREUM_AGENT} is now UP`);
       sysEthUp = true;
     } else {
-      console.log(`Monitor: ${SYSETHEREUM_AGENT} is STILL DOWN, waitng and trying again`);
+      console.log(`Monitor: ${SYSETHEREUM_AGENT} is STILL DOWN, waiting and trying again`);
     }
 
     count ++;
