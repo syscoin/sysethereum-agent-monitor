@@ -48,7 +48,7 @@ const startAndMonitorSysEthAgent = async () => {
   while(!sysEthUp) {
     await startSysEthAgent();
     console.log("Monitoring for agent up, attempt ", count);
-    await sleep(8);
+    await sleep(20);
 
     let list = await find('name', SYSETHEREUM_AGENT, false);
     if (list.length === 1) {
