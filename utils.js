@@ -123,7 +123,15 @@ async function checkSyscoinChainTips(mailer, autorestart) {
   let local = full_local.find(el => el.status === 'active');
   let remote = full_remote.find(el => el.status === 'active');
 
-  if (local.height !== remote.height || local.hash !== remote.hash) {
+  // only error if the chain difference is > sys_block_threshold
+  let diff = 0;
+  if (local.height > remote.height) {
+    diff = local.height - remote.height;
+  } else {
+    diff = remote.height - local.height;
+  }
+
+  if (diff > config.sys_block_threshold || (diff === 0 && local.hash !== remote.hash)) {
     console.log('Chain mismatch');
     console.log('Local chain:', local);
     console.log('Remote chain:', remote);

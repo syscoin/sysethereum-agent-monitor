@@ -3,6 +3,7 @@
   "agent_id": "NVirginia1-52.207.94.153",
   "infura_api": "",
   "eth_block_threshold": 1440,
+  "sys_block_threshold": 5,
   "smtp": {
     "host": "",
     "auth": {
