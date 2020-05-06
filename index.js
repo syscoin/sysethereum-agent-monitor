@@ -61,7 +61,7 @@ async function checkForAlerts(mailer, skipMail) {
       reason = 'One or more key processes (agent, syscoind, sysgeth, sysrelayer) has stopped unexpectedly.\n'
       Object.keys(processStatus).forEach(key => {
         if (key !== 'isError') {
-          reason += `${key]}: ${processStatus[key]}\n`;
+          reason += `${key}: ${processStatus[key]}\n`;
         }
       })
     } else if (sysStatus.isError) {
