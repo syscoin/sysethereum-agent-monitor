@@ -74,6 +74,7 @@ async function checkForAlerts(mailer, skipMail) {
     const tokenObj = {
       reason
     };
+    console.log('tokenObj:', JSON.stringify(tokenObj));
     await utils.sendMail(mailer, require('./messages/agent_restart_in_progress'), tokenObj, true);
     const result = await stopAndRestart();
 
