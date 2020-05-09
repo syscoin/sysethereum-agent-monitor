@@ -72,7 +72,7 @@ async function checkForAlerts(mailer, skipMail) {
       reason = 'Cannot determine!';
     }
     const tokenObj = {
-      reason.toString()
+      reason: reason.toString()
     };
 
     await utils.sendMail(mailer, require('./messages/agent_restart_in_progress'), tokenObj, true);
