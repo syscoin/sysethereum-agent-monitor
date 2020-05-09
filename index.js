@@ -61,7 +61,7 @@ async function checkForAlerts(mailer, skipMail) {
       reason = 'One or more key processes (agent, syscoind, sysgeth, sysrelayer) has stopped unexpectedly.\n'
       Object.keys(processStatus).forEach(key => {
         if (key !== 'isError') {
-          reason += `${key}: ${processStatus[key]}\n`;
+          reason += `${key}: ${processStatus[key]} \n`;
         }
       })
     } else if (sysStatus.isError) {
@@ -72,10 +72,10 @@ async function checkForAlerts(mailer, skipMail) {
       reason = 'Cannot determine!';
     }
     const tokenObj = {
-      reason
+      reason.toString()
     };
 
-    await utils.sendMail(mailer, require('./messages/agent_restart_in_progress'), {}, true);
+    await utils.sendMail(mailer, require('./messages/agent_restart_in_progress'), tokenObj, true);
     const result = await stopAndRestart();
 
     if(result) {
