@@ -58,7 +58,7 @@ async function checkForAlerts(mailer, skipMail) {
     console.log('Attempting restart!!!');
     let reason;
     if (processStatus.isError) {
-      reason = 'One or more key processes (agent, syscoind, sysgeth, sysrelayer) has stopped unexpectedly.';
+      reason = 'One or more key processes (agent, syscoind, sysgeth, sysrelayer) has stopped unexpectedly. \\n';
       Object.keys(processStatus).forEach(key => {
         if (key !== 'isError') {
           // reason += `${key}: ${processStatus[key]} \n`;
