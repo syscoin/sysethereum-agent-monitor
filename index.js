@@ -63,7 +63,7 @@ async function checkForAlerts(mailer, skipMail) {
       Object.keys(processStatus).forEach(key => {
         if (key !== 'isError') {
           reason.text += `${key}: ${processStatus[key]} \\n`;
-          reason.html += `<li ${processStatus[key] === false ? `style='color:red; font-weight: bold` : ''$}>${key}: ${processStatus[key]} </li>`;
+          reason.html += `<li ${processStatus[key] === false ? `style='color:red; font-weight: bold` : ''}>${key}: ${processStatus[key]} </li>`;
         }
       });
       reason.html += '</ul>';
