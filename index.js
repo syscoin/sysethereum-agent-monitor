@@ -13,6 +13,7 @@ let mailConfig = utils.configMailer(config);
 let transporter = nodemailer.createTransport(mailConfig);
 let checkInterval;
 let isAttemptingRestart = false;
+const agentStartTime = Date.now();
 
 // see if we have existing uptime data
 let uptime = utils.readFile(constants.UPTIME_FILE);
@@ -43,7 +44,7 @@ async function checkProcessStatuses(getRawProcessStatus) {
     }
   }
 
-  return getRawProcessStatus ? { processStatus, sysStatus, ethStatus } : { ...processStatus, sysStatus, ethStatus };
+  return getRawProcessStatus ? { processStatus, sysStatus, ethStatus, agentStartTime } : { ...processStatus, sysStatus, ethStatus, agentStartTime };
 }
 
 async function checkForAlerts(mailer, skipMail) {
@@ -79,6 +80,7 @@ async function checkForAlerts(mailer, skipMail) {
       html: reason.html
     };
 
+    agentStartTime = Date.now(); // update agent start time
     await utils.sendMail(mailer, require('./messages/agent_restart_in_progress'), tokenObj, true);
     const result = await stopAndRestart();
 
