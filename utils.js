@@ -1,5 +1,5 @@
 require('arraync');
-const Jtr = require('json-token-replace');
+const Jtr = require('@ptkdev/json-token-replace');
 const find = require('find-process');
 const fs = require('fs');
 const syscoin = require('@syscoin/syscoin-js');

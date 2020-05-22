@@ -1,4 +1,4 @@
-const Jtr = require("json-token-replace");
+const Jtr = require("@ptkdev/json-token-replace");
 const jtr = new Jtr();
 
 
