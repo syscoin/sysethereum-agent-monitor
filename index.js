@@ -13,7 +13,7 @@ let mailConfig = utils.configMailer(config);
 let transporter = nodemailer.createTransport(mailConfig);
 let checkInterval;
 let isAttemptingRestart = false;
-const agentStartTime = Date.now();
+let agentStartTime = Date.now();
 
 // see if we have existing uptime data
 let uptime = utils.readFile(constants.UPTIME_FILE);
