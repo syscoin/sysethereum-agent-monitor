@@ -28,7 +28,7 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.5",
     "setenv": "git+https://github.com/blockchainfoundryinc/setenv.git",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.5.0",
     "token-substitute": "^1.2.0"
   }
 }
